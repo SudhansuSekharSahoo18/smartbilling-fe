@@ -1,0 +1,8 @@
+
+.print-area {
+    opacity: 0;
+}
+
+.data-table table thead tr th {
+    width: 150px;
+}

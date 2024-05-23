@@ -1,5 +1,6 @@
 .App {
   text-align: center;
+  background-color: rgb(25, 148, 131);
 }
 
 .App-logo {
@@ -36,3 +37,43 @@
     transform: rotate(360deg);
   }
 }
+
+button {
+  background-color: #007bff;
+  color: white;
+  padding: 10px 20px;
+  margin: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  /* cursor: pointer; */
+  font-size: 16px;
+  transition: background-color 0.3s;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+input {
+  font-size: 20px;
+
+}
+.app-container {
+  display: flex;
+}
+
+.content {
+  margin-left: 100px; /* Same as .menu-bar width */
+  padding: 20px;
+  width: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+
+h1 {
+  color: #333;
+}
+
