@@ -2,37 +2,37 @@
     padding: 20px;
   }
   
-  table {
+  .data-table table {
     width: 100%;
     border-collapse: collapse;
-    margin: 20px 0;
+    margin: 20px 0px;
     font-size: 18px;
     text-align: left;
   }
   
-  table th, table td {
-    padding: 12px 15px;
+  .data-table table th, table td {
+    padding: 5px 5px;
     border: 1px solid #ddd;
   }
   
-  table th {
+  .data-table table th {
     background-color: #074438;
     color: white;
   }
   
-  table tr:nth-of-type(even) {
+  .data-table table tr:nth-of-type(even) {
     background-color: #f3f3f3;
   }
    
-  table tr:nth-of-type(odd) {
+  .data-table table tr:nth-of-type(odd) {
     background-color: #e8e8e8;
   }
   
-  table tr:hover {
+  .data-table table tr:hover {
     background-color: #c9c9c9;
   }
   
-  table tr:last-of-type {
+  .data-table table tr:last-of-type {
     border-bottom: 2px solid #0b6f19;
   }
 
