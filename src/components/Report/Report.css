@@ -1,0 +1,20 @@
+.report table, .report th, .report td {
+    border: 1px solid black;
+    /* font-size: 10px; */
+    /* width: 100%; */
+}
+.report table {
+    /* border: 1px solid black; */
+    /* font-size: 10px; */
+
+    margin: 10px 0px;
+    width: 100%;
+}
+
+.report th, .report td {
+    font-size: 10px;
+}
+
+.report div {
+    text-align: left;
+}
