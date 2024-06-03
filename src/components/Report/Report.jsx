@@ -7,8 +7,6 @@ const Report = (props) => {
   const address = 'Motto, Chandabali, Bhadrak';
   const gstNumber = '2347JDKJDGK&56757';
 
-  const [billNumber, setBillNumber] = useState('12345');
-  const [customerName, setCustomerName] = useState('Default');
 
     return (
        <div className='report'>
@@ -16,9 +14,9 @@ const Report = (props) => {
           <div style={{fontSize:'15px', margin:'0px', textAlign: 'center'}}>{address}</div>
           <div style={{fontSize:'15px', margin:'0px', textAlign: 'center'}}>GSTIN: {gstNumber}</div>
           <div style={{fontSize:'20px', margin:'0px', textAlign: 'center'}}>Retail Invoice</div>
-          <div style={{fontSize:'12px', margin:'0px'}}>Bill Number: {billNumber}</div>
-          <div style={{fontSize:'12px', margin:'0px'}}>Date: {billNumber}</div>
-          <div style={{fontSize:'12px', margin:'0px'}}>Name: {customerName}</div>
+          <div style={{fontSize:'12px', margin:'0px'}}>Bill Number: {props.billNumber}</div>
+          <div style={{fontSize:'12px', margin:'0px'}}>Date: {props.dateTime}</div>
+          <div style={{fontSize:'12px', margin:'0px'}}>Name: {props.customerName}</div>
           <table border="1">
             <thead>
                 <tr>
@@ -40,12 +38,12 @@ const Report = (props) => {
                     </tr>
                 ))}
                 <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td>{props.getTotalSum()}</td>
-                    </tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>{props.getTotalSum()}</td>
+                </tr>
             </tbody>
           </table>
           {/* <div style={{fontSize:'12px', margin:'0px', textAlign: 'right'}}>Total {props.getTotalSum()}</div> */}

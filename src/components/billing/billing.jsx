@@ -5,7 +5,9 @@ import Table from '../TableContainer/Table';
 import Report from '../Report/Report';
 
 const Billing = () => {
-  const ipAddress = "http://192.168.0.100:85/"
+
+  const [ipAddress, setIpAddress] = useState(null);
+  // const ipAddress = process.env.REACT_APP_BACKEND_URL+"api/"
   const componentRef = useRef(null);
   const reactToPrintRef = useRef();
   const [responseData, setResponseData] = useState(null);
@@ -13,6 +15,9 @@ const Billing = () => {
   // const [items, setItems] = useState([]);
   const [products, setProducts] = useState([]);
   const [billItems, setBillItems] = useState([]);
+  const [billNumber, setBillNumber] = useState('12345');
+  const [customerName, setCustomerName] = useState('Default');
+  const [dateTime, setDateTime] = useState('');
 
   const onBarcodeTextChange = (event) => {
       setInputValue(event.target.value);
@@ -31,26 +36,21 @@ const Billing = () => {
 
   const onSubmitButtonClick = () => {
     if (inputValue.trim() !== '') {
+      console.log(products)
       let dbItem = products.find(x => x.barcode === inputValue)
-      // console.log('item -> '+dbItem)
-      if(dbItem !== undefined)
+       if(dbItem !== undefined)
       {
-        let currentItemIndex = billItems.findIndex(x => x.itemId === dbItem.id)
-        let item = billItems[currentItemIndex];
-        console.log('item -> '+item)
-
+        let item = billItems.find(x => x.itemId === dbItem.id)
         if(item === undefined)
         {
           const id = billItems.length+1;
-          const item = {"id": id, "itemId": dbItem.id, "barcode": dbItem.barcode, "itemName": dbItem.itemName, 
-            "price": dbItem.price, "quantity": 1, "discountAmount":0}
+          const item = {"id": id, "itemId": dbItem.id, "barcode": dbItem.barcode, "itemName": dbItem.title,
+            "price": dbItem.sellPrice, "quantity": 1, "discountAmount":0}
           setBillItems([...billItems, item]);
         }
         else
         {
           item.quantity += 1;
-          billItems[currentItemIndex] = item;
-          console.log(billItems)
           setBillItems([...billItems])
         }
 
@@ -85,7 +85,7 @@ const Billing = () => {
   useEffect(() => {
     const handleKeyDown = (event) => {
         if (event.ctrlKey && event.key === 'p') {
-            event.preventDefault(); 
+            event.preventDefault();
             handleCtrlP();
         }
     };
@@ -98,32 +98,41 @@ const Billing = () => {
   }, []);
 
   useEffect(() => {
-    fetch(ipAddress+'api/Product') // Replace with your API endpoint
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        return response.json();
-      })
+    fetch('/config.json')
+      .then(response => response.json())
       .then(data => {
-        // setData(data);
-        // setLoading(false);
-        console.log('products api ->')
-        console.log(data)
-        setProducts(data);
+        setIpAddress(data.backend_url+'api/')
+        const url = data.backend_url+'api/';
+        console.log('url -> '+url)
+        fetch(url+'product')
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        })
+        .then(data => {
+          // setData(data);
+          // setLoading(false);
+          console.log('products api ->')
+          console.log(data)
+          setProducts(data);
+          // console.log(process.env.REACT_APP_BACKEND_URL)
+        })
+        .catch(error => {
+          // alert(error);
+          const defaultItems = [
+              {id: 1, barcode: "101", itemName: 'Saree', price: 500},
+              {id: 2, barcode: "102", itemName: 'Jeans', price: 1500},
+              {id: 3, barcode: "103", itemName: 'Shirt', price: 400},
+              {id: 4, barcode: "104", itemName: 'Socks', price: 150},
+              {id: 5, barcode: "105", itemName: 'Lungi', price: 80},
+            ];
+          setProducts(defaultItems)
+          // setLoading(false);
+        });
       })
-      .catch(error => {
-        // alert(error);
-        const defaultItems = [
-            {id: 1, barcode: "101", itemName: 'Saree', price: 500}, 
-            {id: 2, barcode: "102", itemName: 'Jeans', price: 1500}, 
-            {id: 3, barcode: "103", itemName: 'Shirt', price: 400}, 
-            {id: 4, barcode: "104", itemName: 'Socks', price: 150}, 
-            {id: 5, barcode: "105", itemName: 'Lungi', price: 80}, 
-          ];
-        setProducts(defaultItems)
-        // setLoading(false);
-      });
+      .catch(error => console.error('Error fetching config:', error));
   }, []);
 
   const updateBillItem = (updatedBillItem) => {
@@ -132,7 +141,7 @@ const Billing = () => {
 
   const addBlankRow = () => {
     const id = billItem.length + 1;
-    const billItem = {"id": id, 'itemId': 0, "barcode": '', "itemName": '', 
+    const billItem = {"id": id, 'itemId': 0, "barcode": '', "itemName": '',
     "price": 0, "quantity": 1, "discountAmount":0}
   setBillItems([...billItems, billItem]);
   }
@@ -148,17 +157,17 @@ const Billing = () => {
       console.log(body)
 
       try {
-          const response = await fetch(ipAddress+'api/Bill', {
+          const response = await fetch(ipAddress+'bill/create', {
               method: 'POST',
               headers: {
                   'Content-Type': 'application/json'
               },
               body: JSON.stringify(bill)
           });
-          console.log(response)
-          // if(response.status)
           const data = await response.json();
-          //handlePrint();
+          setBillNumber(data.id);
+          setCustomerName(data.customerName);
+          setDateTime(data.createdDateTime);
           setResponseData(data);
       } catch (error) {
           console.error('Error:', error);
@@ -172,8 +181,9 @@ const Billing = () => {
     const billItemDto = [];
     billItemList.forEach(ele => {
       billItemDto.push({
-        "id": ele.id,
+        // "id": ele.id,
         "itemId": ele.itemId,
+        "billId": 0,
         "barcode": ele.barcode,
         "itemName": ele.itemName,
         "quantity": ele.quantity,
@@ -198,9 +208,9 @@ const Billing = () => {
       "customerAddress": customerAddress,
       "billItems": billItemDto,
     }
-    
+
     console.log('handleSubmit')
-  
+
     // POST request
     handleSubmit(bill)
 
@@ -227,15 +237,15 @@ const Billing = () => {
       />
       <button onClick={onSubmitButtonClick}>Submit</button>
       <button onClick={onClearButtonClick}>Clear</button>
-      <button onClick={() => createBill(billItems, 0, 'cash', 'default', '', false)}>Create Bill</button>
+      <button onClick={() => createBill(billItems, 0, 'cash', 'default', '', true)}>Create Bill</button>
       <ReactToPrint
-          trigger={() => {
-            return <button>Print Bill</button>;
-          }}
+          // trigger={() => {
+          //   // return <button>Print Bill</button>;
+          // }}
           content={() => componentRef.current}
           ref={reactToPrintRef}
         />
-      
+
       <Table items={billItems} updateBillItem={updateBillItem} addBlankRow={addBlankRow}/>
       {/* <EditableTable /> */}
     </div>
@@ -243,11 +253,11 @@ const Billing = () => {
       {/* print */}
       <div className='print-area'>
         <div ref={componentRef}>
-          <Report billItems={billItems} getTotalSum={getTotalSum} />
+          <Report billNumber={billNumber} customerName={customerName} dateTime={dateTime} billItems={billItems} getTotalSum={getTotalSum} />
         </div>
       </div>
     </div>
-    
+
   );
 };
 
