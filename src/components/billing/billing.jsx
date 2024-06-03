@@ -20,8 +20,7 @@ const Billing = () => {
   const [shopName, setShopName] = useState('Shop Name Not Found');
   const [shopAddress, setShopAddress] = useState('Address not found');
   const [shopGstNumber, setShopGstNumber] = useState('GST number not found');
-  const isInitialRender = useRef(true);
-  const isInitialRender2 = useRef(true);
+  const shallPrintBill = useRef(false);
 
   const onBarcodeTextChange = (event) => {
       setInputValue(event.target.value);
@@ -87,14 +86,10 @@ const Billing = () => {
   };
 
   useEffect(() => {
-    if (isInitialRender2.current) {
-      if(isInitialRender.current)
-        isInitialRender.current = false;
-      else
-        isInitialRender2.current = false;
-    } else {
-      handlePrint();
-    }
+    if(shallPrintBill.current)
+      {
+        handlePrint();
+      }
   }, [billNumber]);
 
   useEffect(() => {
@@ -157,7 +152,7 @@ const Billing = () => {
   }
 
   const addBlankRow = () => {
-    const id = billItem.length + 1;
+    const id = billItems.length + 1;
     const billItem = {"id": id, 'itemId': 0, "barcode": '', "itemName": '',
     "price": 0, "quantity": 1, "discountAmount":0}
   setBillItems([...billItems, billItem]);
@@ -185,6 +180,8 @@ const Billing = () => {
           setBillNumber(data.id);
           setCustomerName(data.customerName);
           setDateTime(data.createdDateTime);
+          
+          shallPrintBill.current = true;
       } catch (error) {
           console.error('Error:', error);
           alert(error)
