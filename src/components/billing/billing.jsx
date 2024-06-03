@@ -10,7 +10,6 @@ const Billing = () => {
   // const ipAddress = process.env.REACT_APP_BACKEND_URL+"api/"
   const componentRef = useRef(null);
   const reactToPrintRef = useRef();
-  const [responseData, setResponseData] = useState(null);
   const [inputValue, setInputValue] = useState('');
   // const [items, setItems] = useState([]);
   const [products, setProducts] = useState([]);
@@ -18,6 +17,11 @@ const Billing = () => {
   const [billNumber, setBillNumber] = useState('12345');
   const [customerName, setCustomerName] = useState('Default');
   const [dateTime, setDateTime] = useState('');
+  const [shopName, setShopName] = useState('Shop Name Not Found');
+  const [shopAddress, setShopAddress] = useState('Address not found');
+  const [shopGstNumber, setShopGstNumber] = useState('GST number not found');
+  const isInitialRender = useRef(true);
+  const isInitialRender2 = useRef(true);
 
   const onBarcodeTextChange = (event) => {
       setInputValue(event.target.value);
@@ -83,6 +87,17 @@ const Billing = () => {
   };
 
   useEffect(() => {
+    if (isInitialRender2.current) {
+      if(isInitialRender.current)
+        isInitialRender.current = false;
+      else
+        isInitialRender2.current = false;
+    } else {
+      handlePrint();
+    }
+  }, [billNumber]);
+
+  useEffect(() => {
     const handleKeyDown = (event) => {
         if (event.ctrlKey && event.key === 'p') {
             event.preventDefault();
@@ -102,8 +117,10 @@ const Billing = () => {
       .then(response => response.json())
       .then(data => {
         setIpAddress(data.backend_url+'api/')
+        setShopName(data.shopName)
+        setShopAddress(data.shopAddress)
+        setShopGstNumber(data.shopGSTNumber)
         const url = data.backend_url+'api/';
-        console.log('url -> '+url)
         fetch(url+'product')
         .then(response => {
           if (!response.ok) {
@@ -168,7 +185,6 @@ const Billing = () => {
           setBillNumber(data.id);
           setCustomerName(data.customerName);
           setDateTime(data.createdDateTime);
-          setResponseData(data);
       } catch (error) {
           console.error('Error:', error);
           alert(error)
@@ -214,11 +230,6 @@ const Billing = () => {
     // POST request
     handleSubmit(bill)
 
-    // on success response
-    if(isPrintBillEnable)
-    {
-      handlePrint();
-    }
   }catch(e)
   {
     console.log(e)
@@ -240,20 +251,20 @@ const Billing = () => {
       <button onClick={() => createBill(billItems, 0, 'cash', 'default', '', true)}>Create Bill</button>
       <ReactToPrint
           // trigger={() => {
-          //   // return <button>Print Bill</button>;
+            // return <button>Print Bill</button>;
           // }}
           content={() => componentRef.current}
           ref={reactToPrintRef}
         />
 
       <Table items={billItems} updateBillItem={updateBillItem} addBlankRow={addBlankRow}/>
-      {/* <EditableTable /> */}
     </div>
 
       {/* print */}
       <div className='print-area'>
         <div ref={componentRef}>
-          <Report billNumber={billNumber} customerName={customerName} dateTime={dateTime} billItems={billItems} getTotalSum={getTotalSum} />
+          <Report billNumber={billNumber} customerName={customerName} dateTime={dateTime} billItems={billItems} 
+          getTotalSum={getTotalSum} shopName={shopName} shopAddress={shopAddress} shopGSTNumber={shopGstNumber} />
         </div>
       </div>
     </div>

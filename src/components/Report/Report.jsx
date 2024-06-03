@@ -1,18 +1,13 @@
-import React, { useState } from 'react';
+import React from 'react';
 import './Report.css';
 
 const Report = (props) => {
 
-  const shopName = 'Nandini Fashion';
-  const address = 'Motto, Chandabali, Bhadrak';
-  const gstNumber = '2347JDKJDGK&56757';
-
-
     return (
        <div className='report'>
-        <div style={{fontSize:'20px', margin:'0px', textAlign: 'center'}}>{shopName}</div>
-          <div style={{fontSize:'15px', margin:'0px', textAlign: 'center'}}>{address}</div>
-          <div style={{fontSize:'15px', margin:'0px', textAlign: 'center'}}>GSTIN: {gstNumber}</div>
+        <div style={{fontSize:'20px', margin:'0px', textAlign: 'center'}}>{props.shopName}</div>
+          <div style={{fontSize:'15px', margin:'0px', textAlign: 'center'}}>{props.shopAddress}</div>
+          <div style={{fontSize:'15px', margin:'0px', textAlign: 'center'}}>GSTIN: {props.shopGSTNumber}</div>
           <div style={{fontSize:'20px', margin:'0px', textAlign: 'center'}}>Retail Invoice</div>
           <div style={{fontSize:'12px', margin:'0px'}}>Bill Number: {props.billNumber}</div>
           <div style={{fontSize:'12px', margin:'0px'}}>Date: {props.dateTime}</div>
@@ -55,7 +50,7 @@ const Report = (props) => {
           <div style={{fontSize:'12px', margin:'0px'}}>SGST 2.5% {props.getTotalSum() * 1.025}</div>
           <div>------------------------------------------------</div>
           <div style={{fontSize:'12px', margin:'0px'}}>Terms & Conditions:</div>
-          <div style={{fontSize:'12px', margin:'0px'}}>Subject to {shopName} No cash return No gurantee on the products</div>
+          <div style={{fontSize:'12px', margin:'0px'}}>Subject to {props.shopName} No cash return No gurantee on the products</div>
           <div style={{fontSize:'12px', margin:'0px'}}>Exchange within 15 days with barcode sticker & bill</div>
           <div style={{fontSize:'12px', margin:'0px'}}>Thank you Shopping with us</div>
           <div style={{fontSize:'12px', margin:'0px'}}>Visit again!!!</div>

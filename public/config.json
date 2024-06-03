@@ -1,3 +1,6 @@
 {
-    "backend_url": "http://smartbilling.com:85/"
+    "backend_url": "http://smartbilling.com:85/",
+    "shopName": "Satyan Kumar",
+    "shopAddress": "Motto, Chandabali, Bhadrak",
+    "shopGSTNumber": "2347JDKJDGK56757"
 }
