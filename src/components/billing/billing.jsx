@@ -5,13 +5,13 @@ import Table from '../TableContainer/Table';
 import Report from '../Report/Report';
 
 const Billing = () => {
-  const ipAddress = "http://192.168.0.106:91/"
+  const ipAddress = "http://192.168.0.100:85/"
   const componentRef = useRef(null);
   const reactToPrintRef = useRef();
   const [responseData, setResponseData] = useState(null);
   const [inputValue, setInputValue] = useState('');
   // const [items, setItems] = useState([]);
-  const [dbItems, setDbItems] = useState([]);
+  const [products, setProducts] = useState([]);
   const [billItems, setBillItems] = useState([]);
 
   const onBarcodeTextChange = (event) => {
@@ -24,9 +24,14 @@ const Billing = () => {
     }
   };
 
+  const onClearButtonClick = () => {
+    var emptyList = []
+    setBillItems([...emptyList])
+  }
+
   const onSubmitButtonClick = () => {
     if (inputValue.trim() !== '') {
-      let dbItem = dbItems.find(x => x.barcode === inputValue)
+      let dbItem = products.find(x => x.barcode === inputValue)
       // console.log('item -> '+dbItem)
       if(dbItem !== undefined)
       {
@@ -93,7 +98,7 @@ const Billing = () => {
   }, []);
 
   useEffect(() => {
-    fetch(ipAddress+'item') // Replace with your API endpoint
+    fetch(ipAddress+'api/Product') // Replace with your API endpoint
       .then(response => {
         if (!response.ok) {
           throw new Error('Network response was not ok');
@@ -103,8 +108,9 @@ const Billing = () => {
       .then(data => {
         // setData(data);
         // setLoading(false);
-        // console.log(data)
-        setDbItems(data);
+        console.log('products api ->')
+        console.log(data)
+        setProducts(data);
       })
       .catch(error => {
         // alert(error);
@@ -115,7 +121,7 @@ const Billing = () => {
             {id: 4, barcode: "104", itemName: 'Socks', price: 150}, 
             {id: 5, barcode: "105", itemName: 'Lungi', price: 80}, 
           ];
-        setDbItems(defaultItems)
+        setProducts(defaultItems)
         // setLoading(false);
       });
   }, []);
@@ -220,7 +226,7 @@ const Billing = () => {
         placeholder="Enter barcode"
       />
       <button onClick={onSubmitButtonClick}>Submit</button>
-      <button onClick={onSubmitButtonClick}>Clear</button>
+      <button onClick={onClearButtonClick}>Clear</button>
       <button onClick={() => createBill(billItems, 0, 'cash', 'default', '', false)}>Create Bill</button>
       <ReactToPrint
           trigger={() => {
