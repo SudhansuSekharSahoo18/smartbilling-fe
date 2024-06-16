@@ -1,8 +1,9 @@
-import React from 'react';
+import React,{useState} from 'react';
 import './Table.css';
 
 const Table = (props) => {
 
+  const [emptyArr, setEmptyArr] = useState([1, 2, 3, 4]);
   const getTotalSum = (items) => {
     let sumTotal = 0;
     items.forEach(x => sumTotal += x.price * x.quantity);
@@ -79,7 +80,7 @@ const Table = (props) => {
     <div className="table-container">
       {(
         <div className='data-table'>
-            <table className=''>
+            <table>
                 <thead>
                     <tr>
                         <th></th>
@@ -96,9 +97,7 @@ const Table = (props) => {
                             <td>
                               <button onClick={() => handleDelete(index)}>Delete</button>
                             </td>
-                            <td>
-                              {item.barcode}
-                            </td>
+                            <td>{item.barcode}</td>
                             <td>
                               <input type="text"
                                 id={`input-${index}-${2}`}
@@ -109,7 +108,6 @@ const Table = (props) => {
                             </td>
                             <td>
                               <input 
-                                // type="number"
                                 id={`input-${index}-${3}`}
                                 value={item.price}
                                 onChange={(e) => handleInputChange(e, index, 'price')}
@@ -128,12 +126,29 @@ const Table = (props) => {
                             <td>{item.price * item.quantity}</td>
                         </tr>
                     ))}
+                    {emptyArr.length > 0 && emptyArr.map((item, index) => (
+                        <tr key={index}>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    ))}
+                    <tr>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td>{getTotalSum(props.items)}</td>
+                    </tr>
                 </tbody>
             </table>
+            
         </div>
       )}
-      <div className='total-sum'>{getTotalSum(props.items)}</div>
-
     </div>
   );
 };

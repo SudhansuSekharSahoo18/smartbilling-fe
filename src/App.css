@@ -63,7 +63,7 @@ input {
 }
 
 .content {
-  margin-left: 100px; /* Same as .menu-bar width */
+  margin-left: 20px; 
   padding: 20px;
   width: 100%;
 }
@@ -75,5 +75,41 @@ body {
 
 h1 {
   color: #333;
+}
+
+/* App.css */
+.app {
+  display: flex;
+}
+
+.nav {
+  height: 100vh;
+  width: 100px;
+  background-color: rgb(68, 67, 67);
+  padding: 10px;
+}
+
+.nav ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.nav ul li {
+  margin-bottom: 10px;
+}
+
+.nav ul li a {
+  text-decoration: none;
+  color: #007bff;
+  font-weight: bold;
+}
+
+.nav ul li a:hover {
+  text-decoration: underline;
+}
+
+.content {
+  flex: 1;
+  padding: 20px;
 }
 

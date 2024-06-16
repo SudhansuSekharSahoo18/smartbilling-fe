@@ -1,43 +1,52 @@
 .table-container {
-    padding: 20px;
-  }
-  
-  .data-table table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 20px 0px;
-    font-size: 18px;
-    text-align: left;
-  }
-  
-  .data-table table th, table td {
-    padding: 5px 5px;
-    border: 1px solid #ddd;
-  }
-  
-  .data-table table th {
-    background-color: #074438;
-    color: white;
-  }
-  
-  .data-table table tr:nth-of-type(even) {
-    background-color: #f3f3f3;
-  }
-   
-  .data-table table tr:nth-of-type(odd) {
-    background-color: #e8e8e8;
-  }
-  
-  .data-table table tr:hover {
-    background-color: #c9c9c9;
-  }
-  
-  .data-table table tr:last-of-type {
-    border-bottom: 2px solid #0b6f19;
-  }
+  padding: 0px;
+  /* height: 500px; */
+  background-color: white;
+  border-radius: 10px;
+}
 
-  .total-sum {
-    margin-left: 1020px;
-    text-align: left;
-    font-size: 20px;
+.data-table table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0px 0px;
+  font-size: 18px;
+  text-align: left;
+  /* height: 500px;  */
+}
+
+.data-table table th, table td {
+  padding: 5px 5px;
+  border: 1px solid #ddd;
+}
+
+.data-table table th {
+  background-color: #074438;
+  color: white;
+}
+
+.data-table table td{
+  background-color: #074438;
+  height: 50px;
+}
+
+.data-table table tr:nth-of-type(even) {
+  background-color: #f3f3f3;
+}
+  
+.data-table table tr:nth-of-type(odd) {
+  background-color: #e8e8e8;
+}
+
+.data-table table tr:hover {
+  background-color: #c9c9c9;
+}
+
+.data-table table tr:last-of-type {
+  border-bottom: 2px solid #0b6f19;
+}
+
+.total-sum {
+  margin-left: 1020px;
+  text-align: left;
+  font-size: 20px;
 }  

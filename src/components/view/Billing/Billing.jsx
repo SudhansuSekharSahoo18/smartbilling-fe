@@ -1,11 +1,15 @@
 import './Billing.css';
 import React, { useRef,useEffect,useState } from 'react';
 import { ReactToPrint } from 'react-to-print';
-import Table from '../TableContainer/Table';
-import Report from '../Report/Report';
+import Table from '../../TableContainer/Table';
+import Report from '../../Report/Report';
+import { AgGridReact } from 'ag-grid-react';
+import "ag-grid-community/styles/ag-grid.css";
+import "ag-grid-community/styles/ag-theme-quartz.css";
 
 const Billing = () => {
-
+  const emptyBillItem = {"id": 0, 'itemId': 0, "barcode": '', "itemName": '',
+    "price": 0, "quantity": 1, "discountAmount":0}
   const [ipAddress, setIpAddress] = useState(null);
   // const ipAddress = process.env.REACT_APP_BACKEND_URL+"api/"
   const componentRef = useRef(null);
@@ -13,7 +17,7 @@ const Billing = () => {
   const [inputValue, setInputValue] = useState('');
   // const [items, setItems] = useState([]);
   const [products, setProducts] = useState([]);
-  const [billItems, setBillItems] = useState([]);
+  const [billItems, setBillItems] = useState([emptyBillItem]);
   const [billNumber, setBillNumber] = useState('12345');
   const [customerName, setCustomerName] = useState('Default');
   const [dateTime, setDateTime] = useState('');
@@ -21,6 +25,7 @@ const Billing = () => {
   const [shopAddress, setShopAddress] = useState('Address not found');
   const [shopGstNumber, setShopGstNumber] = useState('GST number not found');
   const shallPrintBill = useRef(false);
+
 
   const onBarcodeTextChange = (event) => {
       setInputValue(event.target.value);
@@ -33,8 +38,7 @@ const Billing = () => {
   };
 
   const onClearButtonClick = () => {
-    var emptyList = []
-    setBillItems([...emptyList])
+    setBillItems([emptyBillItem])
   }
 
   const onSubmitButtonClick = () => {
@@ -49,7 +53,7 @@ const Billing = () => {
           const id = billItems.length+1;
           const item = {"id": id, "itemId": dbItem.id, "barcode": dbItem.barcode, "itemName": dbItem.title,
             "price": dbItem.sellPrice, "quantity": 1, "discountAmount":0}
-          setBillItems([...billItems, item]);
+          setBillItems([item, ...billItems]);
         }
         else
         {
@@ -74,8 +78,6 @@ const Billing = () => {
   };
 
   const handleCtrlP = () => {
-    // console.log('Ctrl + P was pressed');
-    // alert('Ctrl + P was pressed');
     handlePrint();
   };
 
@@ -124,10 +126,6 @@ const Billing = () => {
           return response.json();
         })
         .then(data => {
-          // setData(data);
-          // setLoading(false);
-          console.log('products api ->')
-          console.log(data)
           setProducts(data);
           // console.log(process.env.REACT_APP_BACKEND_URL)
         })
@@ -159,12 +157,6 @@ const Billing = () => {
   }
 
   const handleSubmit = async (bill) => {
-      // event.preventDefault();
-      // const postData = {
-      //     name: 'John Doe',
-      //     email: 'johndoe@example.com'
-      // };
-
       const body = JSON.stringify(bill);
       console.log(body)
 
@@ -236,26 +228,24 @@ const Billing = () => {
 
   return (
     <div>
-        <div>
-      <input type="text"
-        value={inputValue}
-        onChange={onBarcodeTextChange}
-        onKeyDown={handleKeyDown}
-        placeholder="Enter barcode"
-      />
-      <button onClick={onSubmitButtonClick}>Submit</button>
-      <button onClick={onClearButtonClick}>Clear</button>
-      <button onClick={() => createBill(billItems, 0, 'cash', 'default', '', true)}>Create Bill</button>
-      <ReactToPrint
-          // trigger={() => {
-            // return <button>Print Bill</button>;
-          // }}
-          content={() => componentRef.current}
-          ref={reactToPrintRef}
+      <div>
+        <input type="text" value={inputValue} onChange={onBarcodeTextChange} onKeyDown={handleKeyDown} placeholder="Enter barcode"
         />
+        <button onClick={onSubmitButtonClick}>Submit</button>
+        <button onClick={onClearButtonClick}>Clear</button>
+        <button onClick={() => createBill(billItems, 0, 'cash', 'default', '', true)}>Create Bill</button>
+        <ReactToPrint
+            // trigger={() => {
+              // return <button>Print Bill</button>;
+            // }}
+            content={() => componentRef.current}
+            ref={reactToPrintRef}
+          />
 
-      <Table items={billItems} updateBillItem={updateBillItem} addBlankRow={addBlankRow}/>
-    </div>
+        {/* <AgGridReact rowData={billItems} columnDefs={colDefs} rowSelection={'multiple'} /> */}
+
+        <Table items={billItems} updateBillItem={updateBillItem} addBlankRow={addBlankRow}/>
+      </div>
 
       {/* print */}
       <div className='print-area'>
