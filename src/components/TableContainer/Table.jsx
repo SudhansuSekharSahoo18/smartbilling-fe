@@ -14,10 +14,8 @@ const Table = (props) => {
   const addBlankRow = props.addBlankRow;
 
   const handleKeyDown = (event, row, col) => {
-    // console.log("index -> "+row);
 
     if (event.key === 'ArrowRight') {
-      // console.log('Right arrow key pressed');
       const nextIndex = col + 1;
       const nextInput = document.getElementById(`input-${row}-${nextIndex}`);
       if (nextInput) {
@@ -25,7 +23,6 @@ const Table = (props) => {
       }
     }
     else if (event.key === 'ArrowLeft') {
-      // console.log('Left arrow key pressed');
       const nextIndex = col - 1;
       const nextInput = document.getElementById(`input-${row}-${nextIndex}`);
       if (nextInput) {
@@ -33,7 +30,6 @@ const Table = (props) => {
       }
     }
     else if (event.key === 'ArrowUp') {
-      // console.log('Up arrow key pressed');
       const nextIndex = row - 1;
       const nextInput = document.getElementById(`input-${nextIndex}-${col}`);
       if (nextInput) {
@@ -41,9 +37,6 @@ const Table = (props) => {
       }
     }
     else if (event.key === 'ArrowDown') {
-      // console.log('Down arrow key pressed');
-      // console.log(props.items.length)
-      // console.log(row)
       if(props.items.length - 1 === row)
       {
         addBlankRow();
@@ -57,9 +50,11 @@ const Table = (props) => {
       
     }
   };
-  const updateBillItem = props.updateBillItem;
 
   const handleInputChange = (e, id, field) => {
+    console.log(e.target.value)
+    console.log(id)
+    console.log(field)
     const newData = props.items.map((item) => {
       if (item.id === id) {
           return { ...item, [field]: e.target.value };
@@ -67,13 +62,13 @@ const Table = (props) => {
       return item;
     });
 
-    updateBillItem(newData);
+    props.updateBillItem(newData);
   };
 
 
   const handleDelete = (index) => {
     const newData = props.items.filter((item, i) => i !== index);
-    updateBillItem(newData);
+    props.updateBillItem(newData);
 };
 
   return (

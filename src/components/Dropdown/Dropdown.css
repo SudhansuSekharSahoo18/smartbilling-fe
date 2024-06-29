@@ -1,0 +1,50 @@
+/* src/Dropdown.css */
+.dropdown {
+  position: relative;
+  display: inline-block;
+    /* display: flex; */
+    margin-left: 10px;
+    margin-right: 10px;
+}
+.dropdown select{
+  font-size: medium;
+  width: 80px;
+}
+/* 
+.dropdown-toggle {
+  padding: 10px 20px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  cursor: pointer;
+  color: black;
+} */
+
+/* .dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border: 1px solid #ccc;
+  background-color: #fff;
+} */
+
+.dropdown-item {
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
+.dropdown-item:hover {
+  background-color: #f1f1f1;
+}
+
+.dropdown input{
+  border: 0px;
+}
+
+.textarea{
+  width: 100px;
+  background-color: white;
+}

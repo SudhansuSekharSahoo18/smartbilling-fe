@@ -20,13 +20,30 @@
 }
 
 .data-table table th {
-  background-color: #074438;
-  color: white;
+  background-color: rgb(206, 206, 206);
+  color: black;
+  font-size: small;
 }
 
 .data-table table td{
-  background-color: #074438;
-  height: 50px;
+  background-color: white;
+  height: 30px;
+  font-size: small;
+}
+.data-table table td input{
+  height: 100%;
+  font-size: small;
+  /* padding: 5px; */
+  padding-left: 10px;
+}
+.data-table table td button{
+  font-size: small;
+  padding: 8px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  margin: 0px;
+  margin-left: 25px;
+  background-color: red;
 }
 
 .data-table table tr:nth-of-type(even) {

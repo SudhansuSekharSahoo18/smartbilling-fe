@@ -1,5 +1,5 @@
 import './Billing.css';
-import React, { useRef,useEffect,useState } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { ReactToPrint } from 'react-to-print';
 import Table from '../../TableContainer/Table';
 import Report from '../../Report/Report';
@@ -8,8 +8,10 @@ import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
 
 const Billing = () => {
-  const emptyBillItem = {"id": 0, 'itemId': 0, "barcode": '', "itemName": '',
-    "price": 0, "quantity": 1, "discountAmount":0}
+  const emptyBillItem = {
+    "id": 0, 'itemId': 0, "barcode": '', "itemName": '',
+    "price": 0, "quantity": 1, "discountAmount": 0
+  }
   const [ipAddress, setIpAddress] = useState(null);
   // const ipAddress = process.env.REACT_APP_BACKEND_URL+"api/"
   const componentRef = useRef(null);
@@ -28,7 +30,7 @@ const Billing = () => {
 
 
   const onBarcodeTextChange = (event) => {
-      setInputValue(event.target.value);
+    setInputValue(event.target.value);
   };
 
   const handleKeyDown = (event) => {
@@ -45,29 +47,28 @@ const Billing = () => {
     if (inputValue.trim() !== '') {
       console.log(products)
       let dbItem = products.find(x => x.barcode === inputValue)
-       if(dbItem !== undefined)
-      {
+      console.log('dbItem'+dbItem)
+      if (dbItem !== undefined) {
         let item = billItems.find(x => x.itemId === dbItem.id)
-        if(item === undefined)
-        {
-          const id = billItems.length+1;
-          const item = {"id": id, "itemId": dbItem.id, "barcode": dbItem.barcode, "itemName": dbItem.title,
-            "price": dbItem.sellPrice, "quantity": 1, "discountAmount":0}
+        if (item === undefined) {
+          const id = billItems.length + 1;
+          const item = {
+            "id": id, "itemId": dbItem.id, "barcode": dbItem.barcode, "itemName": dbItem.title,
+            "price": dbItem.sellPrice, "quantity": 1, "discountAmount": 0
+          }
           setBillItems([item, ...billItems]);
         }
-        else
-        {
+        else {
           item.quantity += 1;
           setBillItems([...billItems])
         }
 
         setInputValue('');
       }
-      else
-      {
+      else {
         alert('No item found');
       }
-  }
+    }
   };
 
   const getTotalSum = () => {
@@ -88,18 +89,17 @@ const Billing = () => {
   };
 
   useEffect(() => {
-    if(shallPrintBill.current)
-      {
-        handlePrint();
-      }
+    if (shallPrintBill.current) {
+      handlePrint();
+    }
   }, [billNumber]);
 
   useEffect(() => {
     const handleKeyDown = (event) => {
-        if (event.ctrlKey && event.key === 'p') {
-            event.preventDefault();
-            handleCtrlP();
-        }
+      if (event.ctrlKey && event.key === 'p') {
+        event.preventDefault();
+        handleCtrlP();
+      }
     };
 
     window.addEventListener('keydown', handleKeyDown);
@@ -113,34 +113,34 @@ const Billing = () => {
     fetch('/config.json')
       .then(response => response.json())
       .then(data => {
-        setIpAddress(data.backend_url+'api/')
+        setIpAddress(data.backend_url + 'api/')
         setShopName(data.shopName)
         setShopAddress(data.shopAddress)
         setShopGstNumber(data.shopGSTNumber)
-        const url = data.backend_url+'api/';
-        fetch(url+'product')
-        .then(response => {
-          if (!response.ok) {
-            throw new Error('Network response was not ok');
-          }
-          return response.json();
-        })
-        .then(data => {
-          setProducts(data);
-          // console.log(process.env.REACT_APP_BACKEND_URL)
-        })
-        .catch(error => {
-          // alert(error);
-          const defaultItems = [
-              {id: 1, barcode: "101", itemName: 'Saree', price: 500},
-              {id: 2, barcode: "102", itemName: 'Jeans', price: 1500},
-              {id: 3, barcode: "103", itemName: 'Shirt', price: 400},
-              {id: 4, barcode: "104", itemName: 'Socks', price: 150},
-              {id: 5, barcode: "105", itemName: 'Lungi', price: 80},
+        const url = data.backend_url + 'api/';
+        fetch(url + 'product')
+          .then(response => {
+            if (!response.ok) {
+              throw new Error('Network response was not ok');
+            }
+            return response.json();
+          })
+          .then(data => {
+            setProducts(data);
+            // console.log(process.env.REACT_APP_BACKEND_URL)
+          })
+          .catch(error => {
+            // alert(error);
+            const defaultItems = [
+              { id: 1, barcode: "101", itemName: 'Saree', price: 500 },
+              { id: 2, barcode: "102", itemName: 'Jeans', price: 1500 },
+              { id: 3, barcode: "103", itemName: 'Shirt', price: 400 },
+              { id: 4, barcode: "104", itemName: 'Socks', price: 150 },
+              { id: 5, barcode: "105", itemName: 'Lungi', price: 80 },
             ];
-          setProducts(defaultItems)
-          // setLoading(false);
-        });
+            setProducts(defaultItems)
+            // setLoading(false);
+          });
       })
       .catch(error => console.error('Error fetching config:', error));
   }, []);
@@ -151,78 +151,78 @@ const Billing = () => {
 
   const addBlankRow = () => {
     const id = billItems.length + 1;
-    const billItem = {"id": id, 'itemId': 0, "barcode": '', "itemName": '',
-    "price": 0, "quantity": 1, "discountAmount":0}
-  setBillItems([...billItems, billItem]);
+    const billItem = {
+      "id": id, 'itemId': 0, "barcode": '', "itemName": '',
+      "price": 0, "quantity": 1, "discountAmount": 0
+    }
+    setBillItems([...billItems, billItem]);
   }
 
   const handleSubmit = async (bill) => {
-      const body = JSON.stringify(bill);
-      console.log(body)
+    const body = JSON.stringify(bill);
+    console.log(body)
 
-      try {
-          const response = await fetch(ipAddress+'bill/create', {
-              method: 'POST',
-              headers: {
-                  'Content-Type': 'application/json'
-              },
-              body: JSON.stringify(bill)
-          });
-          const data = await response.json();
-          setBillNumber(data.id);
-          setCustomerName(data.customerName);
-          setDateTime(data.createdDateTime);
-          
-          shallPrintBill.current = true;
-      } catch (error) {
-          console.error('Error:', error);
-          alert(error)
-      }
+    try {
+      const response = await fetch(ipAddress + 'bill/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(bill)
+      });
+      const data = await response.json();
+      setBillNumber(data.id);
+      setCustomerName(data.customerName);
+      setDateTime(data.createdDateTime);
+
+      shallPrintBill.current = true;
+    } catch (error) {
+      console.error('Error:', error);
+      alert(error)
+    }
   };
 
   const createBill = (billItemList, discountAmount, modeOfPayment, customerName, customerAddress, isPrintBillEnable) => {
-    try
-    {
-    const billItemDto = [];
-    billItemList.forEach(ele => {
-      billItemDto.push({
-        // "id": ele.id,
-        "itemId": ele.itemId,
-        "billId": 0,
-        "barcode": ele.barcode,
-        "itemName": ele.itemName,
-        "quantity": ele.quantity,
-        "price": ele.price,
-        "discountAmount": ele.discountAmount,
-        "amount": ele.quantity * ele.price - ele.discountAmount,
+    try {
+      const billItemDto = [];
+      billItemList.forEach(ele => {
+        billItemDto.push({
+          // "id": ele.id,
+          "itemId": ele.itemId,
+          "billId": 0,
+          "barcode": ele.barcode,
+          "itemName": ele.itemName,
+          "quantity": ele.quantity,
+          "price": ele.price,
+          "discountAmount": ele.discountAmount,
+          "amount": ele.quantity * ele.price - ele.discountAmount,
+        });
       });
-    });
 
-    let gst = 0;
-    let subTotal = 0;
-    let totalAmount = 0;
-    billItemDto.forEach(x => subTotal += x.amount);
-    totalAmount = subTotal - discountAmount + gst;
-    const bill = {
-      "id": 0,
-      "subTotal": subTotal,
-      "discountAmount": discountAmount,
-      "totalAmount": totalAmount,
-      "modeOfPayment": modeOfPayment,
-      "customerName": customerName,
-      "customerAddress": customerAddress,
-      "billItems": billItemDto,
+      let gst = 0;
+      let subTotal = 0;
+      let totalAmount = 0;
+      billItemDto.forEach(x => subTotal += x.amount);
+      totalAmount = subTotal - discountAmount + gst;
+      const bill = {
+        "id": 0,
+        "subTotal": subTotal,
+        "discountAmount": discountAmount,
+        "totalAmount": totalAmount,
+        "modeOfPayment": modeOfPayment,
+        "customerName": customerName,
+        "customerAddress": customerAddress,
+        "billItems": billItemDto,
+      }
+
+      console.log('handleSubmit')
+
+      // POST request
+      handleSubmit(bill)
+
+    } catch (e) {
+      console.log(e)
     }
-
-    console.log('handleSubmit')
-
-    // POST request
-    handleSubmit(bill)
-
-  }catch(e)
-  {
-    console.log(e)
-  }
 
   }
 
@@ -235,23 +235,20 @@ const Billing = () => {
         <button onClick={onClearButtonClick}>Clear</button>
         <button onClick={() => createBill(billItems, 0, 'cash', 'default', '', true)}>Create Bill</button>
         <ReactToPrint
-            // trigger={() => {
-              // return <button>Print Bill</button>;
-            // }}
-            content={() => componentRef.current}
-            ref={reactToPrintRef}
-          />
-
-        {/* <AgGridReact rowData={billItems} columnDefs={colDefs} rowSelection={'multiple'} /> */}
-
-        <Table items={billItems} updateBillItem={updateBillItem} addBlankRow={addBlankRow}/>
+          // trigger={() => {
+          // return <button>Print Bill</button>;
+          // }}
+          content={() => componentRef.current}
+          ref={reactToPrintRef}
+        />
+        <Table items={billItems} updateBillItem={updateBillItem} addBlankRow={addBlankRow} />
       </div>
 
       {/* print */}
       <div className='print-area'>
         <div ref={componentRef}>
-          <Report billNumber={billNumber} customerName={customerName} dateTime={dateTime} billItems={billItems} 
-          getTotalSum={getTotalSum} shopName={shopName} shopAddress={shopAddress} shopGSTNumber={shopGstNumber} />
+          <Report billNumber={billNumber} customerName={customerName} dateTime={dateTime} billItems={billItems}
+            getTotalSum={getTotalSum} shopName={shopName} shopAddress={shopAddress} shopGSTNumber={shopGstNumber} />
         </div>
       </div>
     </div>
