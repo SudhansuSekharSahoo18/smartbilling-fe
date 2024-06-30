@@ -1,5 +1,11 @@
-input{
+.customInput input{
     background-color: rgb(226, 225, 225);
     border: 0px;
     border-radius: 8px;
+}
+
+.customInput label {
+    width: 100px;
+    /* background-color: aqua; */
+    display: inline-block;
 }

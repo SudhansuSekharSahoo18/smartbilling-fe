@@ -8,10 +8,11 @@ import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
 
 const Billing = () => {
-  const emptyBillItem = {
-    "id": 0, 'itemId': 0, "barcode": '', "itemName": '',
-    "price": 0, "quantity": 1, "discountAmount": 0
-  }
+  // const [maxId, setMaxId] = useState(0);
+  // const emptyBillItem = {
+  //   "id": maxId, 'itemId': 0, "barcode": '', "itemName": '',
+  //   "price": 0, "quantity": 1, "discountAmount": 0
+  // }
   const [ipAddress, setIpAddress] = useState(null);
   // const ipAddress = process.env.REACT_APP_BACKEND_URL+"api/"
   const componentRef = useRef(null);
@@ -19,7 +20,11 @@ const Billing = () => {
   const [inputValue, setInputValue] = useState('');
   // const [items, setItems] = useState([]);
   const [products, setProducts] = useState([]);
-  const [billItems, setBillItems] = useState([emptyBillItem]);
+  const [billItems, setBillItems] = useState([{
+    // "id": maxId, 
+    'itemId': 0, "barcode": '', "itemName": '',
+    "price": 0, "quantity": 1, "discountAmount": 0
+  }]);
   const [billNumber, setBillNumber] = useState('12345');
   const [customerName, setCustomerName] = useState('Default');
   const [dateTime, setDateTime] = useState('');
@@ -28,32 +33,43 @@ const Billing = () => {
   const [shopGstNumber, setShopGstNumber] = useState('GST number not found');
   const shallPrintBill = useRef(false);
 
-
-  const onBarcodeTextChange = (event) => {
-    setInputValue(event.target.value);
-  };
-
   const handleKeyDown = (event) => {
     if (event.key === 'Enter') {
       onSubmitButtonClick();
     }
   };
-
   const onClearButtonClick = () => {
-    setBillItems([emptyBillItem])
+    const billItem = {
+      // "id": 0, 
+      'itemId': 0, "barcode": '', "itemName": '',
+      "price": 0, "quantity": 1, "discountAmount": 0
+    }
+    // setMaxId(0);
+    setBillItems([billItem])
+  }
+
+  const addBlankRow = () => {
+    const billItem = {
+      // "id": maxId + 1, 
+      'itemId': 0, "barcode": '', "itemName": '',
+      "price": 0, "quantity": 1, "discountAmount": 0
+    }
+    // setMaxId(maxId + 1);
+    setBillItems([...billItems, billItem]);
   }
 
   const onSubmitButtonClick = () => {
     if (inputValue.trim() !== '') {
-      console.log(products)
+      // console.log(products)
       let dbItem = products.find(x => x.barcode === inputValue)
-      console.log('dbItem'+dbItem)
+      // console.log('dbItem'+dbItem)
       if (dbItem !== undefined) {
         let item = billItems.find(x => x.itemId === dbItem.id)
         if (item === undefined) {
-          const id = billItems.length + 1;
+          // const id = billItems.length + 1;
           const item = {
-            "id": id, "itemId": dbItem.id, "barcode": dbItem.barcode, "itemName": dbItem.title,
+            // "id": id, 
+            "itemId": dbItem.id, "barcode": dbItem.barcode, "itemName": dbItem.title,
             "price": dbItem.sellPrice, "quantity": 1, "discountAmount": 0
           }
           setBillItems([item, ...billItems]);
@@ -145,22 +161,22 @@ const Billing = () => {
       .catch(error => console.error('Error fetching config:', error));
   }, []);
 
-  const updateBillItem = (updatedBillItem) => {
-    setBillItems(updatedBillItem)
-  }
+  // const updateBillItem = (updatedBillItem) => {
+  //   setBillItems(updatedBillItem)
+  // }
 
-  const addBlankRow = () => {
-    const id = billItems.length + 1;
-    const billItem = {
-      "id": id, 'itemId': 0, "barcode": '', "itemName": '',
-      "price": 0, "quantity": 1, "discountAmount": 0
-    }
-    setBillItems([...billItems, billItem]);
-  }
+  // const addBlankRow = () => {
+  //   const id = billItems.length + 1;
+  //   const billItem = {
+  //     "id": id, 'itemId': 0, "barcode": '', "itemName": '',
+  //     "price": 0, "quantity": 1, "discountAmount": 0
+  //   }
+  //   setBillItems([...billItems, billItem]);
+  // }
 
   const handleSubmit = async (bill) => {
     const body = JSON.stringify(bill);
-    console.log(body)
+    // console.log(body)
 
     try {
       const response = await fetch(ipAddress + 'bill/create', {
@@ -177,7 +193,7 @@ const Billing = () => {
 
       shallPrintBill.current = true;
     } catch (error) {
-      console.error('Error:', error);
+      // console.error('Error:', error);
       alert(error)
     }
   };
@@ -215,21 +231,21 @@ const Billing = () => {
         "billItems": billItemDto,
       }
 
-      console.log('handleSubmit')
+      // console.log('handleSubmit')
 
       // POST request
       handleSubmit(bill)
 
     } catch (e) {
-      console.log(e)
+      // console.log(e)
     }
 
   }
 
   return (
     <div>
-      <div>
-        <input type="text" value={inputValue} onChange={onBarcodeTextChange} onKeyDown={handleKeyDown} placeholder="Enter barcode"
+      <div id='barcodeControls' className='barcodeControls'>
+        <input id='barcodeInput' type="text" value={inputValue} onChange={(e) => setInputValue(e.target.value)} onKeyDown={handleKeyDown} placeholder="Enter barcode"
         />
         <button onClick={onSubmitButtonClick}>Submit</button>
         <button onClick={onClearButtonClick}>Clear</button>
@@ -241,7 +257,9 @@ const Billing = () => {
           content={() => componentRef.current}
           ref={reactToPrintRef}
         />
-        <Table items={billItems} updateBillItem={updateBillItem} addBlankRow={addBlankRow} />
+        <Table addBlankRow={addBlankRow} items={billItems} setBillItems={setBillItems}
+        // updateBillItem={updateBillItem} addBlankRow={addBlankRow}
+        />
       </div>
 
       {/* print */}

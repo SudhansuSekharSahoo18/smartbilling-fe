@@ -1,9 +1,12 @@
-import React,{useState} from 'react';
+import React, { useState, useEffect } from 'react';
 import './Table.css';
 
-const Table = (props) => {
+const Table = ({ addBlankRow, items, setBillItems }) => {
 
-  const [emptyArr, setEmptyArr] = useState([1, 2, 3, 4]);
+  const [emptyArr, setEmptyArr] = useState([1, 2, 3, 4, 5]);
+  const [flag, setFlag] = useState(false);
+  const [focusedIndex, setFocusedIndex] = useState([0, 0]);
+
   const getTotalSum = (items) => {
     let sumTotal = 0;
     items.forEach(x => sumTotal += x.price * x.quantity);
@@ -11,137 +14,160 @@ const Table = (props) => {
     return sumTotal;
   };
 
-  const addBlankRow = props.addBlankRow;
-
   const handleKeyDown = (event, row, col) => {
-
     if (event.key === 'ArrowRight') {
       const nextIndex = col + 1;
       const nextInput = document.getElementById(`input-${row}-${nextIndex}`);
       if (nextInput) {
-          nextInput.focus();
+        nextInput.focus();
       }
     }
     else if (event.key === 'ArrowLeft') {
       const nextIndex = col - 1;
       const nextInput = document.getElementById(`input-${row}-${nextIndex}`);
       if (nextInput) {
-          nextInput.focus();
+        nextInput.focus();
       }
     }
     else if (event.key === 'ArrowUp') {
       const nextIndex = row - 1;
       const nextInput = document.getElementById(`input-${nextIndex}-${col}`);
       if (nextInput) {
-          nextInput.focus();
+        nextInput.focus();
       }
     }
-    else if (event.key === 'ArrowDown') {
-      if(props.items.length - 1 === row)
-      {
+    else if (event.key === 'ArrowDown' || event.key === 'Enter') {
+      if (items.length - 1 === row) {
         addBlankRow();
+        setFocusedIndex([row, col])
+        setFlag(true)
+        return;
       }
-      
-        const nextIndex = row + 1;
-        const nextInput = document.getElementById(`input-${nextIndex}-${col}`);
-        if (nextInput) {
-            nextInput.focus();
-        }
-      
+
+      onDownArrowPressed(row, col)
     }
   };
 
-  const handleInputChange = (e, id, field) => {
-    console.log(e.target.value)
-    console.log(id)
-    console.log(field)
-    const newData = props.items.map((item) => {
-      if (item.id === id) {
-          return { ...item, [field]: e.target.value };
+  const onDownArrowPressed = (row, col) => {
+    const nextIndex = row + 1;
+    const nextInput = document.getElementById(`input-${nextIndex}-${col}`);
+    if (nextInput) {
+      nextInput.focus();
+    }
+  }
+
+  const handleInputChange = (e, index, field) => {
+
+    // const index = parseInt((e.target.id).split('-')[1])
+    // console.log('index->' + id)
+    // console.log('index->' + index)
+
+    // const newData = items.map((item) => {
+    //   // console.log(item.id + ' == ' + id)
+    //   if (item.id === id) {
+    //     return { ...item, [field]: e.target.value };
+    //   }
+    //   return item;
+    // });
+
+    for (let i = 0; i < items.length; i++) {
+      if (i === index) {
+        if(field === 'itemName'){
+          items[i].itemName = e.target.value
+        } else if(field === 'price'){
+          items[i].price = e.target.value
+        } else if(field === 'quantity'){
+          items[i].quantity = e.target.value
+        }
       }
-      return item;
-    });
+    }
 
-    props.updateBillItem(newData);
+    setBillItems([...items]);
   };
-
 
   const handleDelete = (index) => {
-    const newData = props.items.filter((item, i) => i !== index);
-    props.updateBillItem(newData);
-};
+      const newDate = items.filter((item, i) => i !== index);
+      setBillItems(newDate);
+  };
+
+  useEffect(() => {
+    if (flag) {
+      setFlag(false)
+      onDownArrowPressed(focusedIndex[0], focusedIndex[1])
+    }
+  }, [items]);
 
   return (
     <div className="table-container">
       {(
         <div className='data-table'>
-            <table>
-                <thead>
-                    <tr>
-                        <th></th>
-                        <th>Barcode</th>
-                        <th>ItemName</th>
-                        <th>Price</th>
-                        <th>Qty</th>
-                        <th>Amount</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {props.items.length > 0 && props.items.map((item, index) => (
-                        <tr key={index}>
-                            <td>
-                              <button onClick={() => handleDelete(index)}>Delete</button>
-                            </td>
-                            <td>{item.barcode}</td>
-                            <td>
-                              <input type="text"
-                                id={`input-${index}-${2}`}
-                                value={item.itemName}
-                                onChange={(e) => handleInputChange(e, index, 'itemName')}
-                                onKeyDown={(e) => handleKeyDown(e, index, 2)}
-                                />
-                            </td>
-                            <td>
-                              <input 
-                                id={`input-${index}-${3}`}
-                                value={item.price}
-                                onChange={(e) => handleInputChange(e, index, 'price')}
-                                onKeyDown={(e) => handleKeyDown(e, index, 3)}
-                                />
-                            </td>
-                            <td>
-                              <input 
-                                // type="number"
-                                id={`input-${index}-${4}`}
-                                value={item.quantity}
-                                onChange={(e) => handleInputChange(e, index, 'quantity')}
-                                onKeyDown={(e) => handleKeyDown(e, index, 4)}
-                                />
-                            </td>
-                            <td>{item.price * item.quantity}</td>
-                        </tr>
-                    ))}
-                    {emptyArr.length > 0 && emptyArr.map((item, index) => (
-                        <tr key={index}>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                    ))}
-                    <tr>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td>{getTotalSum(props.items)}</td>
-                    </tr>
-                </tbody>
-            </table>
-            
+          <table>
+            <thead>
+              <tr>
+                <th></th>
+                <th>Barcode</th>
+                <th>ItemName</th>
+                <th>Price</th>
+                <th>Qty</th>
+                <th>Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              {items.length > 0 && items.map((item, index) => (
+                <tr key={index}>
+                  <td>
+                    <button onClick={() => handleDelete(index)}>Delete</button>
+                  </td>
+                  <td>{item.barcode}</td>
+                  <td>
+                    <input type="text"
+                      id={`input-${index}-${2}`}
+                      onChange={(e) => handleInputChange(e, index, 'itemName')}
+                      value={item.itemName}
+                      onKeyDown={(e) => handleKeyDown(e, index, 2)}
+                    />
+                  </td>
+                  <td>
+                    <input type="number"
+                      id={`input-${index}-${3}`}
+                      onChange={(e) => handleInputChange(e, index, 'price')}
+                      value={item.price}
+                      onKeyDown={(e) => handleKeyDown(e, index, 3)}
+                    />
+                  </td>
+                  <td>
+                    <input
+                      type="number"
+                      id={`input-${index}-${4}`}
+                      onChange={(e) => handleInputChange(e, index, 'quantity')}
+                      value={item.quantity}
+                      onKeyDown={(e) => handleKeyDown(e, index, 4)}
+                    />
+                  </td>
+                  <td>{item.price * item.quantity}</td>
+                </tr>
+              ))}
+              {emptyArr.length > 0 && emptyArr.map((item, index) => (
+                <tr key={index}>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+              ))}
+              <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>{getTotalSum(items)}</td>
+              </tr>
+            </tbody>
+          </table>
+
         </div>
       )}
     </div>

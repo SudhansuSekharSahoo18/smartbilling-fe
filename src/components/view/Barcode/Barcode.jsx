@@ -53,7 +53,7 @@ const Barcode = (props) => {
   const onAddItemButtonClicked = () => {
       const item = { itemCode: "", itemName: "", price: 0, quantity: 0 }
       setRowData([...rowData, item]);
-      console.log(rowData)
+      // console.log(rowData)
     }; 
 
   const onClearItemButtonClicked = () => {

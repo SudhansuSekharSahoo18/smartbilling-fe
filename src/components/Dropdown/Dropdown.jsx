@@ -2,12 +2,7 @@ import React, { useState } from 'react';
 import './Dropdown.css';
 
 const Dropdown = ({ label, options, onSelect }) => {
-  const [isOpen, setIsOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState(null);
-
-  const toggleDropdown = () => {
-    setIsOpen(!isOpen);
-  };
 
   const handleOptionClick = (e) => {
     onSelect(e.target.value);
