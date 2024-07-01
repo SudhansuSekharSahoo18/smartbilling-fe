@@ -12,6 +12,11 @@ import 'react-toastify/dist/ReactToastify.css';
 const App = () => {
   const [ipAddress, setIpAddress] = useState(null);
   const notify = (message) => toast.success(message);
+  // const history = useHistory();
+
+  // const handleNavigate = (url) => {
+  //   history.push(url);
+  // };
 
   useEffect(() => {
     fetch('/config.json')

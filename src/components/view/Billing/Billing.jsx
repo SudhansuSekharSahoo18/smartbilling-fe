@@ -27,7 +27,7 @@ const Billing = () => {
     'itemId': 0, "barcode": '', "itemName": '',
     "price": 0, "quantity": 1, "discountAmount": 0
   }]);
-  const [billNumber, setBillNumber] = useState('12345');
+  const [billNumber, setBillNumber] = useState();
   const [customerName, setCustomerName] = useState('');
   const [dateTime, setDateTime] = useState('');
   const [shopName, setShopName] = useState('Shop Name Not Found');
@@ -104,7 +104,8 @@ const Billing = () => {
   };
 
   const handleCtrlP = () => {
-    handlePrint();
+    // handlePrint();
+    // createBill(billItems, 0, 'cash', customerName, '', true)
   };
 
   const handlePrint = () => {
@@ -180,10 +181,10 @@ const Billing = () => {
         body: JSON.stringify(bill)
       });
       const data = await response.json();
-      setBillNumber(data.id);
       setCustomerName(data.customerName);
       setDateTime(formatDate(data.createdDateTime));
       shallPrintBill.current = true;
+      setBillNumber(data.id);
     } catch (error) {
       // console.error('Error:', error);
       alert(error)

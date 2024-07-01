@@ -6,16 +6,19 @@ import CustomInput from '../../CustomInput/CustomInput';
 import './Items.css';
 import Dropdown from '../../Dropdown/Dropdown';
 import { postRequest } from '../../../Helper/apiHelper.js';
+import CustomCheckBox from '../../CustomCheckBox/CustomCheckBox.jsx';
 
 const Items = (props) => {
   const gridRef = useRef(null);
   const [barcode, setBarcode] = useState('');
   const [itemName, setItemName] = useState('');
-  const [quantity, setQuantity] = useState(null);
+  const [hsnCode, setHsnCode] = useState('');
+  const [quantity, setQuantity] = useState(1);
   const [selectedUnit, setSelectedUnit] = useState('Pieces');
   const [costPrice, setCostPrice] = useState();
   const [sellPrice, setSellPrice] = useState();
   const [tax, setTax] = useState();
+  const [isTaxInclusive, setIsTaxInclusive] = useState(false);
   const [selectedId, setSelectedId] = useState(0);
   const [isEditMode, setIsEditMode] = useState(false);
 
@@ -54,26 +57,30 @@ const Items = (props) => {
     { field: "id", flex: 1, filter: true },
     { field: "barcode", flex: 1, filter: true },
     { field: "itemName", flex: 1 },
+    { field: "hsnCode", flex: 1 },
     { field: "quantity", flex: 1 },
     // { field: "Unit", flex:1 },
     { field: "sellPrice", flex: 1 },
     { field: "tax", flex: 1, editable: true, cellEditor: 'agSelectCellEditor', cellEditorParams: { values: ['5%', '12%', '18%'], } },
+    { field: "isTaxInclusive", flex: 1 },
   ]);
 
   const OnAddItemClicked = async () => {
-
-    const itemDto = { 'barcode': barcode, 'itemName': itemName, 'quantity': quantity, 'unit': selectedUnit, 'costPrice': costPrice, 'sellPrice': sellPrice, 'tax': tax, 'categoryId': 1 };
-    // console.log(itemDto)
-    const response = await postRequest(props.ipAddress + 'Product/create', itemDto)
-    // console.log('response')
-    // console.log(response)
+    const itemDto = {
+      'barcode': barcode, 'itemName': itemName, 'hsnCode': hsnCode, 'quantity': quantity, 'unit': selectedUnit,
+      'costPrice': costPrice, 'sellPrice': sellPrice, 'tax': tax, 'isTaxInclusive': isTaxInclusive, 'categoryId': 1
+    };
+    const response = await postRequest(props.ipAddress + 'item/create', itemDto)
     if (response.ok) {
       const data = await response.json();
-      // console.log(data)
       setItems([...items, data])
       OnClearButtonClicked()
       props.notify('Item added')
     }
+    else
+      props.notify(response.status)
+
+
   }
 
   const OnClearButtonClicked = () => {
@@ -81,22 +88,21 @@ const Items = (props) => {
 
     setBarcode('')
     setItemName('')
+    setHsnCode('')
     setQuantity(1)
     setCostPrice(0)
     setSellPrice(0)
     setTax(0)
-
-    console.log(items)
+    setIsTaxInclusive(false)
   }
 
 
   const OnEditButtonClicked = () => {
-    // console.log('selected' + selectedId)
     if (isEditMode) {
       const updatedData = items.map(row =>
         row.id === selectedId ? {
-          ...row, barcode: barcode, itemName: itemName, quantity: quantity, costPrice: costPrice,
-          sellPrice: sellPrice, tax: tax
+          ...row, barcode: barcode, itemName: itemName, hsnCode: hsnCode, quantity: quantity, costPrice: costPrice,
+          sellPrice: sellPrice, tax: tax, isTaxInclusive: isTaxInclusive
         } : row
       );
 
@@ -128,13 +134,14 @@ const Items = (props) => {
   const onRowDoubleClicked = (e) => {
     setSelectedId(e.data['id']);
     const item = items.filter((item) => item.id === selectedId)[0];
-    console.log(item)
     setBarcode(item.barcode)
     setItemName(item.itemName)
+    setHsnCode(item.hsnCode)
     setQuantity(item.quantity)
     setCostPrice(item.costPrice)
     setSellPrice(item.sellPrice)
     setTax(item.tax)
+    setIsTaxInclusive(item.isTaxInclusive)
 
     setIsEditMode(!isEditMode)
   };
@@ -163,11 +170,11 @@ const Items = (props) => {
           })
           .catch(error => {
             const defaultItems = [
-              { id: 1, barcode: "101", itemName: 'Saree', price: 500 },
-              { id: 2, barcode: "102", itemName: 'Jeans', price: 1500 },
-              { id: 3, barcode: "103", itemName: 'Shirt', price: 400 },
-              { id: 4, barcode: "104", itemName: 'Socks', price: 150 },
-              { id: 5, barcode: "105", itemName: 'Lungi', price: 80 },
+              { id: 1, barcode: "101", itemName: 'Invalid', price: 500 },
+              { id: 2, barcode: "102", itemName: 'Invalid', price: 1500 },
+              { id: 3, barcode: "103", itemName: 'Invalid', price: 400 },
+              { id: 4, barcode: "104", itemName: 'Invalid', price: 150 },
+              { id: 5, barcode: "105", itemName: 'Invalid', price: 80 },
             ];
             setItems(defaultItems)
           });
@@ -180,12 +187,15 @@ const Items = (props) => {
       <div className='inputForm'>
         <CustomInput className='customInput' label={'Barcode'} text={barcode} setText={setBarcode} />
         <CustomInput className='customInput' label={'ItemName'} text={itemName} setText={setItemName} />
+        <CustomInput className='customInput' label={'HSN Code'} text={hsnCode} setText={setHsnCode} />
         <CustomInput className='customInput' label={'Quantity'} text={quantity} setText={setQuantity} />
         <Dropdown label={'Select Unit'} options={unitOptions} onSelect={handleSelectedUnit} />
         <CustomInput className='customInput' label={'CostPrice'} text={costPrice} setText={setCostPrice} />
         <CustomInput className='customInput' label={'SellPrice'} text={sellPrice} setText={setSellPrice} />
         <CustomInput className='customInput' label={'Tax'} text={tax} setText={setTax} />
         <label>%</label>
+        <CustomCheckBox className='customInput' label={'Tax Inclusive'} isChecked={isTaxInclusive} setIsChecked={setIsTaxInclusive} />
+
       </div>
       {!isEditMode && <button onClick={OnAddItemClicked}>Add Item</button>}
       {isEditMode && <button onClick={OnEditButtonClicked}>Update</button>}
