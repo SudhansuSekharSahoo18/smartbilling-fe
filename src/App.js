@@ -63,7 +63,7 @@ const App = () => {
             <Route path="/bills" element={<Bills notify={notify} ipAddress={ipAddress} />} />
             <Route path="/generateBarcode" element={<Barcode notify={notify} ipAddress={ipAddress} />} />
             <Route path="/saleReport" element={<SaleReport notify={notify} ipAddress={ipAddress} />} />
-          </Routes>``
+          </Routes>
         </div>
       </div>
     </Router>
