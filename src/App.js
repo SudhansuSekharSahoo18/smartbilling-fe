@@ -22,7 +22,12 @@ const App = () => {
     fetch('/config.json')
       .then(response => response.json())
       .then(data => {
-        setIpAddress(data.backend_url+'api/')
+        if(process.env.REACT_APP_ENVIRONMENT === 'DEVELOPMENT')
+          setIpAddress(data.backend_url+'api/')
+        else if(process.env.REACT_APP_ENVIRONMENT === 'PRODUCTION')
+          setIpAddress(data.backend_url_PROD+'api/')
+          
+        throw new Error('Please setup the env to PRODUCTION');
       })
       .catch(error => console.error('Error fetching config:', error));
   }, []);
@@ -57,7 +62,7 @@ const App = () => {
                 <Route path="/bills" element={<Bills notify={notify} ipAddress={ipAddress}/>} />
                 <Route path="/generateBarcode" element={<Barcode notify={notify} ipAddress={ipAddress} />} />
                 <Route path="/saleReport" element={<SaleReport notify={notify} ipAddress={ipAddress} />} />
-            </Routes>
+            </Routes>``
           </div>
       </div>
     </Router>
