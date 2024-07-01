@@ -53,7 +53,7 @@ const Items = (props) => {
     // { field: "", flex: 1, cellRenderer: EditButton },
     { field: "id", flex: 1, filter: true },
     { field: "barcode", flex: 1, filter: true },
-    { field: "title", flex: 1 },
+    { field: "itemName", flex: 1 },
     { field: "quantity", flex: 1 },
     // { field: "Unit", flex:1 },
     { field: "sellPrice", flex: 1 },
@@ -62,7 +62,7 @@ const Items = (props) => {
 
   const OnAddItemClicked = async () => {
 
-    const itemDto = { 'barcode': barcode, 'title': itemName, 'quantity': quantity, 'unit': selectedUnit, 'costPrice': costPrice, 'sellPrice': sellPrice, 'tax': tax, 'categoryId': 1 };
+    const itemDto = { 'barcode': barcode, 'itemName': itemName, 'quantity': quantity, 'unit': selectedUnit, 'costPrice': costPrice, 'sellPrice': sellPrice, 'tax': tax, 'categoryId': 1 };
     // console.log(itemDto)
     const response = await postRequest(props.ipAddress + 'Product/create', itemDto)
     // console.log('response')
@@ -95,7 +95,7 @@ const Items = (props) => {
     if (isEditMode) {
       const updatedData = items.map(row =>
         row.id === selectedId ? {
-          ...row, barcode: barcode, title: itemName, quantity: quantity, costPrice: costPrice,
+          ...row, barcode: barcode, itemName: itemName, quantity: quantity, costPrice: costPrice,
           sellPrice: sellPrice, tax: tax
         } : row
       );
@@ -130,7 +130,7 @@ const Items = (props) => {
     const item = items.filter((item) => item.id === selectedId)[0];
     console.log(item)
     setBarcode(item.barcode)
-    setItemName(item.title)
+    setItemName(item.itemName)
     setQuantity(item.quantity)
     setCostPrice(item.costPrice)
     setSellPrice(item.sellPrice)
@@ -150,7 +150,7 @@ const Items = (props) => {
       .then(response => response.json())
       .then(data => {
         const url = data.backend_url + 'api/';
-        fetch(url + 'product')
+        fetch(url + 'Item')
           .then(response => {
             if (!response.ok) {
               throw new Error('Network response was not ok');
@@ -158,16 +158,16 @@ const Items = (props) => {
             return response.json();
           })
           .then(data => {
-            data.length = 5
+            // data.length = 5
             setItems(data);
           })
           .catch(error => {
             const defaultItems = [
-              { id: 1, barcode: "101", title: 'Saree', price: 500 },
-              { id: 2, barcode: "102", title: 'Jeans', price: 1500 },
-              { id: 3, barcode: "103", title: 'Shirt', price: 400 },
-              { id: 4, barcode: "104", title: 'Socks', price: 150 },
-              { id: 5, barcode: "105", title: 'Lungi', price: 80 },
+              { id: 1, barcode: "101", itemName: 'Saree', price: 500 },
+              { id: 2, barcode: "102", itemName: 'Jeans', price: 1500 },
+              { id: 3, barcode: "103", itemName: 'Shirt', price: 400 },
+              { id: 4, barcode: "104", itemName: 'Socks', price: 150 },
+              { id: 5, barcode: "105", itemName: 'Lungi', price: 80 },
             ];
             setItems(defaultItems)
           });
@@ -178,13 +178,13 @@ const Items = (props) => {
   return (
     <div className='itemsPage'>
       <div className='inputForm'>
-        <CustomInput label={'Barcode'} text={barcode} setText={setBarcode} />
-        <CustomInput label={'ItemName'} text={itemName} setText={setItemName} />
-        <CustomInput label={'Quantity'} text={quantity} setText={setQuantity} />
+        <CustomInput className='customInput' label={'Barcode'} text={barcode} setText={setBarcode} />
+        <CustomInput className='customInput' label={'ItemName'} text={itemName} setText={setItemName} />
+        <CustomInput className='customInput' label={'Quantity'} text={quantity} setText={setQuantity} />
         <Dropdown label={'Select Unit'} options={unitOptions} onSelect={handleSelectedUnit} />
-        <CustomInput label={'CostPrice'} text={costPrice} setText={setCostPrice} />
-        <CustomInput label={'SellPrice'} text={sellPrice} setText={setSellPrice} />
-        <CustomInput label={'Tax'} text={tax} setText={setTax} />
+        <CustomInput className='customInput' label={'CostPrice'} text={costPrice} setText={setCostPrice} />
+        <CustomInput className='customInput' label={'SellPrice'} text={sellPrice} setText={setSellPrice} />
+        <CustomInput className='customInput' label={'Tax'} text={tax} setText={setTax} />
         <label>%</label>
       </div>
       {!isEditMode && <button onClick={OnAddItemClicked}>Add Item</button>}

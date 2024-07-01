@@ -69,15 +69,15 @@ const Table = ({ addBlankRow, items, setBillItems }) => {
     //   }
     //   return item;
     // });
-
+    
     for (let i = 0; i < items.length; i++) {
       if (i === index) {
         if(field === 'itemName'){
           items[i].itemName = e.target.value
         } else if(field === 'price'){
-          items[i].price = e.target.value
+          items[i].price = Number(e.target.value)
         } else if(field === 'quantity'){
-          items[i].quantity = e.target.value
+          items[i].quantity = Number(e.target.value)
         }
       }
     }

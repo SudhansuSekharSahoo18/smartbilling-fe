@@ -3,9 +3,11 @@ import React, { useRef, useEffect, useState } from 'react';
 import { ReactToPrint } from 'react-to-print';
 import Table from '../../TableContainer/Table';
 import Report from '../../Report/Report';
-import { AgGridReact } from 'ag-grid-react';
-import "ag-grid-community/styles/ag-grid.css";
-import "ag-grid-community/styles/ag-theme-quartz.css";
+// import { AgGridReact } from 'ag-grid-react';
+// import "ag-grid-community/styles/ag-grid.css";
+// import "ag-grid-community/styles/ag-theme-quartz.css";
+import CustomInput from '../../CustomInput/CustomInput';
+import { formatDate } from '../../../Helper/dateHelper.js'
 
 const Billing = () => {
   // const [maxId, setMaxId] = useState(0);
@@ -26,7 +28,7 @@ const Billing = () => {
     "price": 0, "quantity": 1, "discountAmount": 0
   }]);
   const [billNumber, setBillNumber] = useState('12345');
-  const [customerName, setCustomerName] = useState('Default');
+  const [customerName, setCustomerName] = useState('');
   const [dateTime, setDateTime] = useState('');
   const [shopName, setShopName] = useState('Shop Name Not Found');
   const [shopAddress, setShopAddress] = useState('Address not found');
@@ -44,13 +46,11 @@ const Billing = () => {
       'itemId': 0, "barcode": '', "itemName": '',
       "price": 0, "quantity": 1, "discountAmount": 0
     }
-    // setMaxId(0);
     setBillItems([billItem])
   }
 
   const addBlankRow = () => {
     const billItem = {
-      // "id": maxId + 1, 
       'itemId': 0, "barcode": '', "itemName": '',
       "price": 0, "quantity": 1, "discountAmount": 0
     }
@@ -67,12 +67,21 @@ const Billing = () => {
         let item = billItems.find(x => x.itemId === dbItem.id)
         if (item === undefined) {
           // const id = billItems.length + 1;
-          const item = {
-            // "id": id, 
-            "itemId": dbItem.id, "barcode": dbItem.barcode, "itemName": dbItem.title,
-            "price": dbItem.sellPrice, "quantity": 1, "discountAmount": 0
+          if (billItems.length === 1 && billItems[0].itemName === '' && billItems[0].price === 0) {
+            const item = {
+              "itemId": dbItem.id, "barcode": dbItem.barcode, "itemName": dbItem.itemName,
+              "price": dbItem.sellPrice, "quantity": 1, "discountAmount": 0
+            }
+            setBillItems([item]);
           }
-          setBillItems([item, ...billItems]);
+          else {
+            const item = {
+              // "id": id, 
+              "itemId": dbItem.id, "barcode": dbItem.barcode, "itemName": dbItem.itemName,
+              "price": dbItem.sellPrice, "quantity": 1, "discountAmount": 0
+            }
+            setBillItems([item, ...billItems]);
+          }
         }
         else {
           item.quantity += 1;
@@ -134,7 +143,7 @@ const Billing = () => {
         setShopAddress(data.shopAddress)
         setShopGstNumber(data.shopGSTNumber)
         const url = data.backend_url + 'api/';
-        fetch(url + 'product')
+        fetch(url + 'item')
           .then(response => {
             if (!response.ok) {
               throw new Error('Network response was not ok');
@@ -161,23 +170,7 @@ const Billing = () => {
       .catch(error => console.error('Error fetching config:', error));
   }, []);
 
-  // const updateBillItem = (updatedBillItem) => {
-  //   setBillItems(updatedBillItem)
-  // }
-
-  // const addBlankRow = () => {
-  //   const id = billItems.length + 1;
-  //   const billItem = {
-  //     "id": id, 'itemId': 0, "barcode": '', "itemName": '',
-  //     "price": 0, "quantity": 1, "discountAmount": 0
-  //   }
-  //   setBillItems([...billItems, billItem]);
-  // }
-
   const handleSubmit = async (bill) => {
-    const body = JSON.stringify(bill);
-    // console.log(body)
-
     try {
       const response = await fetch(ipAddress + 'bill/create', {
         method: 'POST',
@@ -189,8 +182,7 @@ const Billing = () => {
       const data = await response.json();
       setBillNumber(data.id);
       setCustomerName(data.customerName);
-      setDateTime(data.createdDateTime);
-
+      setDateTime(formatDate(data.createdDateTime));
       shallPrintBill.current = true;
     } catch (error) {
       // console.error('Error:', error);
@@ -249,7 +241,7 @@ const Billing = () => {
         />
         <button onClick={onSubmitButtonClick}>Submit</button>
         <button onClick={onClearButtonClick}>Clear</button>
-        <button onClick={() => createBill(billItems, 0, 'cash', 'default', '', true)}>Create Bill</button>
+        <button onClick={() => createBill(billItems, 0, 'cash', customerName, '', true)}>Create Bill</button>
         <ReactToPrint
           // trigger={() => {
           // return <button>Print Bill</button>;
@@ -257,9 +249,16 @@ const Billing = () => {
           content={() => componentRef.current}
           ref={reactToPrintRef}
         />
+        {/* <div>Customer Details</div> */}
+
+        <br />
         <Table addBlankRow={addBlankRow} items={billItems} setBillItems={setBillItems}
-        // updateBillItem={updateBillItem} addBlankRow={addBlankRow}
         />
+        <div className='customerDetails'>
+          <CustomInput className='customInput' label="Name" text={customerName} setText={setCustomerName} />
+          {/* <CustomInput className='customInput' label="Mobile Number" />
+          <CustomInput className='customInput' label="Address" /> */}
+        </div>
       </div>
 
       {/* print */}

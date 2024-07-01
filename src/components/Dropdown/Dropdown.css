@@ -1,9 +1,10 @@
 .dropdown {
   position: relative;
   display: inline-block;
+  /* background-color: cyan; */
 }
 .dropdown label{
-  width: 100px;
+  width: 150px;
   display: inline-block;
 }
 .dropdown select{

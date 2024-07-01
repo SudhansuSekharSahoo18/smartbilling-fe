@@ -6,7 +6,9 @@
     width: 100%;
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 5px;
+    align-items: start;
+    justify-content: flex-start;
 }
 .ag-theme-quartz {
     height: 450px;

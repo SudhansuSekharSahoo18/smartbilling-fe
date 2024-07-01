@@ -8,3 +8,11 @@
 .data-table table thead tr th {
     width: 150px;
 }
+.customerDetails{
+    display: flex;
+}
+.customInput{
+    margin-right: 10px;
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
