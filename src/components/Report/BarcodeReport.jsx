@@ -2,18 +2,16 @@ import React, { useState } from 'react';
 import './Report.css';
 import Barcode from 'react-barcode';
 
+// https://www.youtube.com/watch?v=E3oKoxctZd0&ab_channel=Bakhriddin%40%24
 const BarcodeReport = ({ barcodeList, shopName }) => {
     return (
-        <div className='barcodeReport'>
+        <div className='barcodeReport' style={{ width: '2in', height: '1in', margin: '0' }}>
             {barcodeList.length > 0 && barcodeList.map((item, index) => (
-                <div key={index}>
-                    <div style={{ fontSize: '20px', margin: '0px', textAlign: 'center' }}>{shopName}</div>
-                    <div style={{ fontSize: '20px', margin: '0px', textAlign: 'center' }}>
-                        <Barcode height={30} value={item.barcode} />
-                    </div>
-                    <div style={{ fontSize: '20px', margin: '0px' }}>{item.itemName}</div>
-                    <div style={{ fontSize: '20px', margin: '0px' }}>Fixed Price: {item.price}</div>
-                    <div style={{ pageBreakAfter: 'always' }}></div>
+                <div key={index} style={{ pageBreakAfter: 'always' }}>
+                    <div style={{ fontSize: '10px', margin: '0px', textAlign: 'center' }}>{shopName}</div>
+                    <Barcode height={10} value={item.barcode} fontSize={'10px'} />
+                    <div style={{ fontSize: '10px', margin: '0px' }}>{item.itemName}</div>
+                    <div style={{ fontSize: '10px', margin: '0px' }}>Fixed Price: {item.price}</div>
                 </div>
             ))}
         </div>
