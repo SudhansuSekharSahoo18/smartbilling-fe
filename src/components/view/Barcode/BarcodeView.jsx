@@ -5,7 +5,7 @@ import "ag-grid-community/styles/ag-theme-quartz.css";
 import { ReactToPrint } from 'react-to-print';
 import BarcodeReport from '../../Report/BarcodeReport';
 
-const Barcode = (props) => {
+const BarcodeView = (props) => {
 
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
@@ -117,4 +117,4 @@ const Barcode = (props) => {
   );
 };
 
-export default Barcode;
+export default BarcodeView;
