@@ -9,7 +9,7 @@ const BarcodeReport = ({ barcodeList, shopName }) => {
             {barcodeList.length > 0 && barcodeList.map((item, index) => (
                 <div key={index} style={{ pageBreakAfter: 'always' }}>
                     <div style={{ fontSize: '10px', margin: '0px', textAlign: 'center' }}>{shopName}</div>
-                    <Barcode height={10} value={item.barcode} fontSize={'10px'} />
+                    <Barcode width={1} height={40} value={item.itemCode} fontSize={10} />
                     <div style={{ fontSize: '10px', margin: '0px' }}>{item.itemName}</div>
                     <div style={{ fontSize: '10px', margin: '0px' }}>Fixed Price: {item.price}</div>
                 </div>

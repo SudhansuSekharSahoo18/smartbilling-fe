@@ -14,8 +14,8 @@ const Bills = () => {
   ]);
 
   const pagination = true;
-  const paginationPageSize = 500;
-  const paginationPageSizeSelector = [200, 500, 1000];
+  const paginationPageSize = 20;
+  const paginationPageSizeSelector = [20, 50, 100];
 
   const [colDefs, setColDefs] = useState([
     { field: "id", filter: true },

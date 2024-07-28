@@ -3,5 +3,6 @@
     "backend_url": "https://localhost:7271/",
     "shopName": "Satyan Kumar",
     "shopAddress": "Motto, Chandabali, Bhadrak",
-    "shopGSTNumber": "2347JDKJDGK56757"
+    "shopGSTNumber": "2347JDKJDGK56757",
+    "BarcodeGenerateFilePath": "C:\\Sudhansu\\BarcodeGeneratePath\\Barcode.txt"
 }

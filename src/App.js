@@ -11,6 +11,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 const App = () => {
   const [ipAddress, setIpAddress] = useState(null);
+  const [barcodeGenerateFilePath, setBarcodeGenerateFilePath] = useState(null);
   const [selectedTab, setSelectedTab] = useState('');
   const notify = (message) => toast.success(message);
   // const history = useHistory();
@@ -27,7 +28,7 @@ const App = () => {
           setIpAddress(data.backend_url + 'api/')
         else if (process.env.REACT_APP_ENVIRONMENT === 'PRODUCTION')
           setIpAddress(data.backend_url_PROD + 'api/')
-
+        setBarcodeGenerateFilePath(data.BarcodeGenerateFilePath);
         throw new Error('Please setup the env to PRODUCTION');
       })
       .catch(error => console.error('Error fetching config:', error));
@@ -61,7 +62,8 @@ const App = () => {
             <Route path="/" element={<Items notify={notify} ipAddress={ipAddress} />} />
             <Route path="/pos" element={<Billing notify={notify} ipAddress={ipAddress} />} />
             <Route path="/bills" element={<Bills notify={notify} ipAddress={ipAddress} />} />
-            <Route path="/generateBarcode" element={<BarcodeView notify={notify} ipAddress={ipAddress} />} />
+            <Route path="/generateBarcode" element={<BarcodeView notify={notify} ipAddress={ipAddress}
+              barcodeGenerateFilePath={barcodeGenerateFilePath} />} />
             <Route path="/saleReport" element={<SaleReport notify={notify} ipAddress={ipAddress} />} />
           </Routes>
         </div>

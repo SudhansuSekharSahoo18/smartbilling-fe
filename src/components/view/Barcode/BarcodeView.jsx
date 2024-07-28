@@ -4,31 +4,53 @@ import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
 import { ReactToPrint } from 'react-to-print';
 import BarcodeReport from '../../Report/BarcodeReport';
+import { GetBarcodeList } from '../../../APIEndpoints.js'
+import FolderChooser from '../../FolderChooser/FolderChooser.jsx';
 
-const BarcodeView = (props) => {
-
+const BarcodeView = ({ notify, ipAddress, barcodeGenerateFilePath }) => {
+  const gridRef = useRef(null);
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
   const componentRef = useRef(null);
   const reactToPrintRef = useRef();
   const [shopName, setShopName] = useState('Nandini Fashion')
+  const [selectedId, setSelectedId] = useState(0)
 
   const [rowData, setRowData] = useState([
-    { barcode: "101", itemName: "Jeans", price: 1299, quantity: 10 },
-    { barcode: "102", itemName: "Shirt", price: 800, quantity: 10 },
+    { itemCode: "101", itemName: "Jeans", price: 1299, quantity: 10 },
+    { itemCode: "102", itemName: "Shirt", price: 800, quantity: 10 },
     // { barcode: "103", itemName: "Jacket", price: 3000, quantity: 10 },
   ]);
 
   const [colDefs, setColDefs] = useState([
-    { field: "barcode", editable: true, filter: true },
+    { field: "itemCode", editable: true, filter: true },
     { field: "itemName", editable: true },
     { field: "price", editable: true },
     { field: "quantity", editable: true },
   ]);
 
+  const OnDeleteButtonClicked = () => {
+    if (selectedId === 0) {
+      alert('Please select a record to delete')
+      return;
+    }
+    const newData = rowData.filter((item) => item.id !== selectedId);
+    setRowData(newData)
+    setSelectedId(0);
+  }
+
+  
+  const onSelectionChanged = () => {
+    const selectedNodes = gridRef.current.api.getSelectedNodes();
+    if (selectedNodes.length > 0) {
+      const selectedData = selectedNodes.map(node => node.data);
+      const temp = selectedData[0];
+      setSelectedId(temp['id']);
+    }
+  };  
+
   const OnGenerateBarcodeClicked = async () => {
-    props.notify('Barcode generated')
-    const url = props.ipAddress + 'Barcode/GenerateBarcode';
+    const url = ipAddress + 'Barcode/GenerateBarcode';
 
     try {
       const response = await fetch(url, {
@@ -36,7 +58,7 @@ const BarcodeView = (props) => {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(rowData)
+        body: JSON.stringify({'filePath': barcodeGenerateFilePath, 'barcodeList': rowData})
       });
 
       if (!response.ok) {
@@ -44,16 +66,11 @@ const BarcodeView = (props) => {
       }
 
       const responseData = await response.json();
-      setData(responseData);
-      // console.log(responseData);
-
+      onClearItemButtonClicked();
+      notify('Barcode file created')
     } catch (error) {
       setError(error.message);
     }
-  }
-
-  function EditButton(props) {
-    return <button onClick={() => window.alert('clicked')}>Edit</button>;
   }
 
   const onAddItemButtonClicked = () => {
@@ -73,42 +90,43 @@ const BarcodeView = (props) => {
     }
   };
 
-  // useEffect(() => {
-  //   fetch('/config.json')
-  //   .then(response => response.json())
-  //   .then(data => {
-  //       const url = data.backend_url+'api/';
-  //       fetch(url+'bill/Get')
-  //       .then(response => {
-  //       if (!response.ok) {
-  //           throw new Error('Network response was not ok');
-  //       }
-  //       return response.json();
-  //       })
-  //       .then(data => {
-  //           console.log(data)
-  //           setRowData(data);
-  //       })
-  //       .catch(error => {
-  //         setRowData(defaultItems)
-  //       });
-  //   })
-  //   .catch(error => console.error('Error fetching config:', error));
-  // }, []);
+  useEffect(() => {
+    console.log(ipAddress + GetBarcodeList)
+
+    fetch(ipAddress + GetBarcodeList)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then(data => {
+        console.log(data)
+        setRowData(data);
+      })
+      .catch(error => {
+        setRowData(rowData)
+      });
+  }, []);
 
   return (
     <div className="ag-theme-quartz" style={{ height: 500 }} >
-      <button onClick={() => OnGenerateBarcodeClicked()}>Generate Barcode</button>
+      {/* <FolderChooser /> */}
+      <button onClick={() => OnGenerateBarcodeClicked()}>Export</button>
       <button onClick={() => onAddItemButtonClicked()}>Add Item</button>
       <button onClick={() => onClearItemButtonClicked()}>Clear</button>
-      <ReactToPrint
+      <button onClick={() => OnDeleteButtonClicked()}>Delete</button>
+      {/* <ReactToPrint
         trigger={() => {
           return <button>Print Barcode</button>;
         }}
         content={() => componentRef.current}
         ref={reactToPrintRef}
-      />
-      <AgGridReact rowData={rowData} columnDefs={colDefs} rowSelection={'multiple'}
+      /> */}
+      <AgGridReact rowData={rowData} columnDefs={colDefs}
+          ref={gridRef}
+          rowSelection={'single'}
+          onSelectionChanged={() => onSelectionChanged()}
       />
       <div ref={componentRef}>
         <BarcodeReport barcodeList={rowData} shopName={shopName} />
