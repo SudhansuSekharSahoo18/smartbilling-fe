@@ -17,8 +17,11 @@ const Items = (props) => {
   const [selectedUnit, setSelectedUnit] = useState('Pieces');
   const [costPrice, setCostPrice] = useState();
   const [sellPrice, setSellPrice] = useState();
+  const [MRP, setMRP] = useState();
+  const [discountAmount, setDiscountAmount] = useState();
+  const [discountPercentage, setDiscountPercentage] = useState();
   const [tax, setTax] = useState();
-  const [isTaxInclusive, setIsTaxInclusive] = useState(false);
+  const [isTaxInclusive, setIsTaxInclusive] = useState(true);
   const [selectedId, setSelectedId] = useState(0);
   const [isEditMode, setIsEditMode] = useState(false);
 
@@ -61,6 +64,9 @@ const Items = (props) => {
     { field: "quantity", flex: 1 },
     // { field: "Unit", flex:1 },
     { field: "sellPrice", flex: 1 },
+    { field: "MRP", flex: 1 },
+    { field: "DiscountAmount", flex: 1 },
+    { field: "DiscountPercentage", flex: 1 },
     { field: "tax", flex: 1, editable: true, cellEditor: 'agSelectCellEditor', cellEditorParams: { values: ['5%', '12%', '18%'], } },
     { field: "isTaxInclusive", flex: 1 },
   ]);
@@ -68,7 +74,7 @@ const Items = (props) => {
   const OnAddItemClicked = async () => {
     const itemDto = {
       'barcode': barcode, 'itemName': itemName, 'hsnCode': hsnCode, 'quantity': quantity, 'unit': selectedUnit,
-      'costPrice': costPrice, 'sellPrice': sellPrice, 'tax': tax, 'isTaxInclusive': isTaxInclusive, 'categoryId': 1
+      'costPrice': costPrice, 'sellPrice': sellPrice, 'mrp': MRP, 'discountAmount': discountAmount, 'discountPercentage': discountPercentage, 'tax': tax, 'isTaxInclusive': isTaxInclusive, 'categoryId': 1
     };
     const response = await postRequest(props.ipAddress + 'item/create', itemDto)
     if (response.ok) {
@@ -92,8 +98,11 @@ const Items = (props) => {
     setQuantity(1)
     setCostPrice(0)
     setSellPrice(0)
+    setMRP(0)
+    setDiscountAmount(0)
+    setDiscountPercentage(0)
     setTax(0)
-    setIsTaxInclusive(false)
+    setIsTaxInclusive(true)
   }
 
 
@@ -102,7 +111,7 @@ const Items = (props) => {
       const updatedData = items.map(row =>
         row.id === selectedId ? {
           ...row, barcode: barcode, itemName: itemName, hsnCode: hsnCode, quantity: quantity, costPrice: costPrice,
-          sellPrice: sellPrice, tax: tax, isTaxInclusive: isTaxInclusive
+          sellPrice: sellPrice, mrp: MRP, discountAmount: discountAmount, discountPercentage: discountPercentage, tax: tax, isTaxInclusive: isTaxInclusive
         } : row
       );
 
@@ -140,6 +149,9 @@ const Items = (props) => {
     setQuantity(item.quantity)
     setCostPrice(item.costPrice)
     setSellPrice(item.sellPrice)
+    setMRP(item.mrp)
+    setMRP(item.discountAmount)
+    setMRP(item.discountPercentage)
     setTax(item.tax)
     setIsTaxInclusive(item.isTaxInclusive)
 
@@ -151,7 +163,7 @@ const Items = (props) => {
     // setQuantity(5);
     // setCostPrice(100);
     // setSellPrice(200);
-    // setTax(5);
+    setTax(5);
 
     fetch('/config.json')
       .then(response => response.json())
@@ -187,14 +199,17 @@ const Items = (props) => {
       <div className='inputForm'>
         <CustomInput className='customInput' label={'Barcode'} text={barcode} setText={setBarcode} />
         <CustomInput className='customInput' label={'ItemName'} text={itemName} setText={setItemName} />
-        <CustomInput className='customInput' label={'HSN Code'} text={hsnCode} setText={setHsnCode} />
         <CustomInput className='customInput' label={'Quantity'} text={quantity} setText={setQuantity} />
         <Dropdown label={'Select Unit'} options={unitOptions} onSelect={handleSelectedUnit} />
         <CustomInput className='customInput' label={'CostPrice'} text={costPrice} setText={setCostPrice} />
         <CustomInput className='customInput' label={'SellPrice'} text={sellPrice} setText={setSellPrice} />
+        <CustomInput className='customInput' label={'MRP'} text={MRP} setText={setMRP} />
+        <CustomInput className='customInput' label={'Discount Amount'} text={discountAmount} setText={setDiscountAmount} />
+        <CustomInput className='customInput' label={'Discount Percentage'} text={discountPercentage} setText={setDiscountPercentage} />
         <CustomInput className='customInput' label={'Tax'} text={tax} setText={setTax} />
         <label>%</label>
         <CustomCheckBox className='customInput' label={'Tax Inclusive'} isChecked={isTaxInclusive} setIsChecked={setIsTaxInclusive} />
+        <CustomInput className='customInput' label={'HSN Code'} text={hsnCode} setText={setHsnCode} />
 
       </div>
       {!isEditMode && <button onClick={OnAddItemClicked}>Add Item</button>}
