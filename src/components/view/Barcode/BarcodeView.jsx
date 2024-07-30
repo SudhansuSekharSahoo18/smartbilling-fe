@@ -15,6 +15,7 @@ const BarcodeView = ({ notify, ipAddress, barcodeGenerateFilePath }) => {
   const reactToPrintRef = useRef();
   const [shopName, setShopName] = useState('Nandini Fashion')
   const [ip, setIp] = useState(null)
+  const [barcodeFilePath, setBarcodeFilePath] = useState(null)
   const [selectedId, setSelectedId] = useState(0)
 
   const [rowData, setRowData] = useState([
@@ -59,7 +60,7 @@ const BarcodeView = ({ notify, ipAddress, barcodeGenerateFilePath }) => {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({'filePath': barcodeGenerateFilePath, 'barcodeList': rowData})
+        body: JSON.stringify({'filePath': barcodeFilePath, 'barcodeList': rowData})
       });
 
       if (!response.ok) {
@@ -97,6 +98,7 @@ const BarcodeView = ({ notify, ipAddress, barcodeGenerateFilePath }) => {
       .then(data => {
         const url = data.backend_url + 'api/';
         setIp(url)
+        setBarcodeFilePath(data.BarcodeGenerateFilePath)
         fetch(url + GetBarcodeList)
           .then(response => {
             if (!response.ok) {
