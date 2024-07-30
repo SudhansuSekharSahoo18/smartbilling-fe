@@ -131,6 +131,16 @@ const Items = (props) => {
     setSelectedId(0);
   }
 
+  const OnAddToBarcodeButtonClicked = () => {
+    if (selectedId === 0) {
+      alert('Please select a record to delete')
+      return;
+    }
+    const newData = items.filter((item) => item.id !== selectedId);
+    setItems(newData)
+    setSelectedId(0);
+  }
+
   const onSelectionChanged = () => {
     const selectedNodes = gridRef.current.api.getSelectedNodes();
     if (selectedNodes.length > 0) {
@@ -150,8 +160,8 @@ const Items = (props) => {
     setCostPrice(item.costPrice)
     setSellPrice(item.sellPrice)
     setMRP(item.mrp)
-    setMRP(item.discountAmount)
-    setMRP(item.discountPercentage)
+    setDiscountAmount(item.discountAmount)
+    setDiscountPercentage(item.discountPercentage)
     setTax(item.tax)
     setIsTaxInclusive(item.isTaxInclusive)
 
@@ -216,6 +226,7 @@ const Items = (props) => {
       {isEditMode && <button onClick={OnEditButtonClicked}>Update</button>}
       <button onClick={OnClearButtonClicked}>{isEditMode ? 'Cancel' : 'Clear'}</button>
       {!isEditMode && <button onClick={OnDeleteButtonClicked}>Delete</button>}
+      {!isEditMode && <button onClick={OnAddToBarcodeButtonClicked}>Add to Barcode</button>}
       {!isEditMode && <div className="ag-theme-quartz" >
         <AgGridReact rowData={items} columnDefs={colDefs}
           ref={gridRef}
