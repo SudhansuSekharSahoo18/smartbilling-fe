@@ -16,7 +16,7 @@ const Billing = () => {
   //   "price": 0, "quantity": 1, "discountAmount": 0
   // }
   const [ipAddress, setIpAddress] = useState(null);
-  // const ipAddress = process.env.REACT_APP_BACKEND_URL+"api/"
+  // const ipAddress = process.env.REACT_APP_backendUrl+"api/"
   const componentRef = useRef(null);
   const reactToPrintRef = useRef();
   const [inputValue, setInputValue] = useState('');
@@ -139,11 +139,11 @@ const Billing = () => {
     fetch('/config.json')
       .then(response => response.json())
       .then(data => {
-        setIpAddress(data.backend_url + 'api/')
+        setIpAddress(data.backendUrl + 'api/')
         setShopName(data.shopName)
         setShopAddress(data.shopAddress)
         setShopGstNumber(data.shopGSTNumber)
-        const url = data.backend_url + 'api/';
+        const url = data.backendUrl + 'api/';
         fetch(url + 'item')
           .then(response => {
             if (!response.ok) {
@@ -153,7 +153,7 @@ const Billing = () => {
           })
           .then(data => {
             setProducts(data);
-            // console.log(process.env.REACT_APP_BACKEND_URL)
+            // console.log(process.env.REACT_APP_backendUrl)
           })
           .catch(error => {
             // alert(error);

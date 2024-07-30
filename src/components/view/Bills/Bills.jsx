@@ -53,7 +53,7 @@ const Bills = () => {
     fetch('/config.json')
       .then(response => response.json())
       .then(data => {
-        const url = data.backend_url + 'api/';
+        const url = data.backendUrl + 'api/';
         fetch(url + 'bill/Get')
           .then(response => {
             if (!response.ok) {

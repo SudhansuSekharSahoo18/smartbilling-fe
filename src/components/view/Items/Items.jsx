@@ -64,9 +64,9 @@ const Items = (props) => {
     { field: "quantity", flex: 1 },
     // { field: "Unit", flex:1 },
     { field: "sellPrice", flex: 1 },
-    { field: "MRP", flex: 1 },
-    { field: "DiscountAmount", flex: 1 },
-    { field: "DiscountPercentage", flex: 1 },
+    { field: "mrp", flex: 1 },
+    { field: "discountAmount", flex: 1 },
+    { field: "discountPercentage", flex: 1 },
     { field: "tax", flex: 1, editable: true, cellEditor: 'agSelectCellEditor', cellEditorParams: { values: ['5%', '12%', '18%'], } },
     { field: "isTaxInclusive", flex: 1 },
   ]);
@@ -168,7 +168,7 @@ const Items = (props) => {
     fetch('/config.json')
       .then(response => response.json())
       .then(data => {
-        const url = data.backend_url + 'api/';
+        const url = data.backendUrl + 'api/';
         fetch(url + 'Item')
           .then(response => {
             if (!response.ok) {

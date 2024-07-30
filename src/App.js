@@ -8,6 +8,8 @@ import Billing from './components/view/Billing/Billing';
 import SaleReport from './components/view/SaleReport/SaleReport';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import ErrorView from './components/view/Error/ErrorView';
+import ErrorPageNotFoundView from './components/view/Error/ErrorPageNotFoundVew';
 
 const App = () => {
   const [ipAddress, setIpAddress] = useState(null);
@@ -25,13 +27,14 @@ const App = () => {
       .then(response => response.json())
       .then(data => {
         if (process.env.REACT_APP_ENVIRONMENT === 'DEVELOPMENT')
-          setIpAddress(data.backend_url + 'api/')
+          setIpAddress(data.backendUrl + 'api/')
         else if (process.env.REACT_APP_ENVIRONMENT === 'PRODUCTION')
-          setIpAddress(data.backend_url_PROD + 'api/')
+          setIpAddress(data.backendUrl_PROD + 'api/')
         setBarcodeGenerateFilePath(data.BarcodeGenerateFilePath);
-        throw new Error('Please setup the env to PRODUCTION');
       })
-      .catch(error => console.error('Error fetching config:', error));
+      .catch(error => {
+        console.error('Error fetching config:', error)
+      });
   }, []);
 
   return (
@@ -65,6 +68,8 @@ const App = () => {
             <Route path="/generateBarcode" element={<BarcodeView notify={notify} ipAddress={ipAddress}
               barcodeGenerateFilePath={barcodeGenerateFilePath} />} />
             <Route path="/saleReport" element={<SaleReport notify={notify} ipAddress={ipAddress} />} />
+            <Route path="/error" element={<ErrorView message={'Not able to connect to server'} />} />
+            <Route component={ErrorPageNotFoundView} />
           </Routes>
         </div>
       </div>

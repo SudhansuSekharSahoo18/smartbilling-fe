@@ -102,7 +102,7 @@ const SaleReport = (props) => {
     // fetch('/config.json')
     // .then(response => response.json())
     // .then(data => {
-    //     const url = data.backend_url+'api/';
+    //     const url = data.backendUrl+'api/';
     //     fetch(url+'product')
     //     .then(response => {
     //     if (!response.ok) {

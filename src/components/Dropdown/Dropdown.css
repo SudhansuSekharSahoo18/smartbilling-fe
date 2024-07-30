@@ -6,14 +6,20 @@
 .dropdown label{
   width: 150px;
   display: inline-block;
+  font-size: small;
 }
 .dropdown select{
   font-size: medium;
-  width: 246px;
+  width: 180px;
   padding: 5px;
   background-color: rgb(226, 225, 225);
   border: 0px;
   border-radius: 8px;
+  
+  font-size: small;
+  padding-left: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
 }
 
 .dropdown-item {

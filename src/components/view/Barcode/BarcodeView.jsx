@@ -96,7 +96,7 @@ const BarcodeView = ({ notify, ipAddress, barcodeGenerateFilePath }) => {
     fetch('/config.json')
       .then(response => response.json())
       .then(data => {
-        const url = data.backend_url + 'api/';
+        const url = data.backendUrl + 'api/';
         setIp(url)
         setBarcodeFilePath(data.BarcodeGenerateFilePath)
         fetch(url + GetBarcodeList)
