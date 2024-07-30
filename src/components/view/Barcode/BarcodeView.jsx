@@ -14,6 +14,7 @@ const BarcodeView = ({ notify, ipAddress, barcodeGenerateFilePath }) => {
   const componentRef = useRef(null);
   const reactToPrintRef = useRef();
   const [shopName, setShopName] = useState('Nandini Fashion')
+  const [ip, setIp] = useState(null)
   const [selectedId, setSelectedId] = useState(0)
 
   const [rowData, setRowData] = useState([
@@ -50,7 +51,7 @@ const BarcodeView = ({ notify, ipAddress, barcodeGenerateFilePath }) => {
   };  
 
   const OnGenerateBarcodeClicked = async () => {
-    const url = ipAddress + 'Barcode/GenerateBarcode';
+    const url = ip + 'Barcode/GenerateBarcode';
 
     try {
       const response = await fetch(url, {
@@ -91,22 +92,26 @@ const BarcodeView = ({ notify, ipAddress, barcodeGenerateFilePath }) => {
   };
 
   useEffect(() => {
-    console.log(ipAddress + GetBarcodeList)
-
-    fetch(ipAddress + GetBarcodeList)
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        return response.json();
-      })
+    fetch('/config.json')
+      .then(response => response.json())
       .then(data => {
-        console.log(data)
-        setRowData(data);
+        const url = data.backend_url + 'api/';
+        setIp(url)
+        fetch(url + GetBarcodeList)
+          .then(response => {
+            if (!response.ok) {
+              throw new Error('Network response was not ok');
+            }
+            return response.json();
+          })
+          .then(data => {
+            setRowData(data);
+          })
+          .catch(error => {
+            throw error;
+          });
       })
-      .catch(error => {
-        setRowData(rowData)
-      });
+      .catch(error => console.error('Error fetching config:', error));
   }, []);
 
   return (
