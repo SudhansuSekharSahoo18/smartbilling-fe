@@ -6,6 +6,8 @@ import { ReactToPrint } from 'react-to-print';
 import BarcodeReport from '../../Report/BarcodeReport';
 import { GetBarcodeList } from '../../../APIEndpoints.js'
 import FolderChooser from '../../FolderChooser/FolderChooser.jsx';
+import { GenerateBarcode } from '../../../APIEndpoints.js'
+
 
 const BarcodeView = ({ notify, ipAddress, barcodeGenerateFilePath }) => {
   const gridRef = useRef(null);
@@ -52,7 +54,7 @@ const BarcodeView = ({ notify, ipAddress, barcodeGenerateFilePath }) => {
   };  
 
   const OnGenerateBarcodeClicked = async () => {
-    const url = ip + 'Barcode/GenerateBarcode';
+    const url = ip + GenerateBarcode;
 
     try {
       const response = await fetch(url, {

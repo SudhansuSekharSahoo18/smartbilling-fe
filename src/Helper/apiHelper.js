@@ -29,3 +29,22 @@ export const postRequest = async (url, bodyData) => {
     throw error;
   }
 };
+
+export const patchRequest = async (url, bodyData) => {
+  try {
+    const response = await fetch(url, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(bodyData)
+    });
+
+    return response;
+
+    //   const data = await response.json();
+    //   return data;
+  } catch (error) {
+    throw error;
+  }
+};

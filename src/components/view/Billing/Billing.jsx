@@ -8,6 +8,8 @@ import Report from '../../Report/Report';
 // import "ag-grid-community/styles/ag-theme-quartz.css";
 import CustomInput from '../../CustomInput/CustomInput';
 import { formatDate } from '../../../Helper/dateHelper.js'
+import { CreateBill, GetAllItems } from '../../../APIEndpoints.js'
+
 
 const Billing = () => {
   // const [maxId, setMaxId] = useState(0);
@@ -70,7 +72,7 @@ const Billing = () => {
           if (billItems.length === 1 && billItems[0].itemName === '' && billItems[0].price === 0) {
             const item = {
               "itemId": dbItem.id, "barcode": dbItem.barcode, "itemName": dbItem.itemName,
-              "price": dbItem.sellPrice, "quantity": 1, "discountAmount": 0
+              "price": dbItem.mrp, "quantity": 1, "discountPercentage": dbItem.discountPercentage
             }
             setBillItems([item]);
           }
@@ -144,7 +146,7 @@ const Billing = () => {
         setShopAddress(data.shopAddress)
         setShopGstNumber(data.shopGSTNumber)
         const url = data.backendUrl + 'api/';
-        fetch(url + 'item')
+        fetch(url + GetAllItems)
           .then(response => {
             if (!response.ok) {
               throw new Error('Network response was not ok');
@@ -173,7 +175,7 @@ const Billing = () => {
 
   const handleSubmit = async (bill) => {
     try {
-      const response = await fetch(ipAddress + 'bill/create', {
+      const response = await fetch(ipAddress + CreateBill, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

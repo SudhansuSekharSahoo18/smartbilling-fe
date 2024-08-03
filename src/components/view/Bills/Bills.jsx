@@ -2,6 +2,7 @@ import React, { useRef, useEffect, useState } from 'react';
 import { AgGridReact } from 'ag-grid-react'; // React Data Grid Component
 import "ag-grid-community/styles/ag-grid.css"; // Mandatory CSS required by the grid
 import "ag-grid-community/styles/ag-theme-quartz.css";
+import { GetAllBill } from '../../../APIEndpoints.js'
 
 const Bills = () => {
 
@@ -54,7 +55,7 @@ const Bills = () => {
       .then(response => response.json())
       .then(data => {
         const url = data.backendUrl + 'api/';
-        fetch(url + 'bill/Get')
+        fetch(url + GetAllBill)
           .then(response => {
             if (!response.ok) {
               throw new Error('Network response was not ok');

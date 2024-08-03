@@ -15,7 +15,14 @@ const App = () => {
   const [ipAddress, setIpAddress] = useState(null);
   const [barcodeGenerateFilePath, setBarcodeGenerateFilePath] = useState(null);
   const [selectedTab, setSelectedTab] = useState('');
-  const notify = (message) => toast.success(message);
+  const notify = (type, message) => {
+    if(type == 'error')
+      toast.error(message)
+    else if(type == 'warning')
+      toast.warning(message)
+    else
+      toast.success(message)
+  }
   // const history = useHistory();
 
   // const handleNavigate = (url) => {

@@ -4,6 +4,8 @@ import "ag-grid-community/styles/ag-grid.css"; // Mandatory CSS required by the 
 import "ag-grid-community/styles/ag-theme-quartz.css";
 import Dropdown from '../../Dropdown/Dropdown';
 import './SaleReport.css';
+import { GenerateSaleReport } from '../../../APIEndpoints.js'
+
 
 const SaleReport = (props) => {
   const [items, setItems] = useState([]);
@@ -61,7 +63,7 @@ const SaleReport = (props) => {
     console.log('Year -> '+selectedYear) 
     const filename = 'salereport.csv'
     try {
-      const response = await fetch(props.ipAddress+'bill/GenerateSaleReport?month='+selectedMonth+'&year='+selectedYear,{
+      const response = await fetch(props.ipAddress + GenerateSaleReport+'?month='+selectedMonth+'&year='+selectedYear,{
         method: 'GET',
         headers: {
           'Content-Type': 'application/octet-stream',

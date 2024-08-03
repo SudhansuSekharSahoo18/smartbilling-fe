@@ -5,8 +5,10 @@ import "ag-grid-community/styles/ag-theme-quartz.css";
 import CustomInput from '../../CustomInput/CustomInput';
 import './Items.css';
 import Dropdown from '../../Dropdown/Dropdown';
-import { postRequest } from '../../../Helper/apiHelper.js';
+import { postRequest, patchRequest } from '../../../Helper/apiHelper.js';
 import CustomCheckBox from '../../CustomCheckBox/CustomCheckBox.jsx';
+import { AddToBarcode, GetAllItems, CreateItem, UpdateItem, DeleteItem } from '../../../APIEndpoints.js'
+
 
 const Items = (props) => {
   const gridRef = useRef(null);
@@ -16,9 +18,7 @@ const Items = (props) => {
   const [quantity, setQuantity] = useState(1);
   const [selectedUnit, setSelectedUnit] = useState('Pieces');
   const [costPrice, setCostPrice] = useState();
-  const [sellPrice, setSellPrice] = useState();
   const [MRP, setMRP] = useState();
-  const [discountAmount, setDiscountAmount] = useState();
   const [discountPercentage, setDiscountPercentage] = useState();
   const [tax, setTax] = useState();
   const [isTaxInclusive, setIsTaxInclusive] = useState(true);
@@ -59,32 +59,30 @@ const Items = (props) => {
     // { field: "", flex: 1, cellRenderer: EditButton },
     { field: "id", flex: 1, filter: true },
     { field: "barcode", flex: 1, filter: true },
-    { field: "itemName", flex: 1 },
+    { field: "itemName", flex: 2 },
     { field: "hsnCode", flex: 1 },
     { field: "quantity", flex: 1 },
-    // { field: "Unit", flex:1 },
-    { field: "sellPrice", flex: 1 },
+    { field: "Unit", flex: 1 },
     { field: "mrp", flex: 1 },
-    { field: "discountAmount", flex: 1 },
     { field: "discountPercentage", flex: 1 },
     { field: "tax", flex: 1, editable: true, cellEditor: 'agSelectCellEditor', cellEditorParams: { values: ['5%', '12%', '18%'], } },
-    { field: "isTaxInclusive", flex: 1 },
+    // { field: "isTaxInclusive", flex: 1 },
   ]);
 
   const OnAddItemClicked = async () => {
     const itemDto = {
       'barcode': barcode, 'itemName': itemName, 'hsnCode': hsnCode, 'quantity': quantity, 'unit': selectedUnit,
-      'costPrice': costPrice, 'sellPrice': sellPrice, 'mrp': MRP, 'discountAmount': discountAmount, 'discountPercentage': discountPercentage, 'tax': tax, 'isTaxInclusive': isTaxInclusive, 'categoryId': 1
+      'costPrice': costPrice, 'mrp': MRP, 'discountPercentage': discountPercentage, 'tax': tax, 'isTaxInclusive': isTaxInclusive,
     };
-    const response = await postRequest(props.ipAddress + 'item/create', itemDto)
+    const response = await postRequest(props.ipAddress + CreateItem, itemDto)
     if (response.ok) {
       const data = await response.json();
       setItems([...items, data])
       OnClearButtonClicked()
-      props.notify('Item added')
+      props.notify('success', 'Item added')
     }
     else
-      props.notify(response.status)
+      props.notify('error', response.status)
 
 
   }
@@ -97,48 +95,70 @@ const Items = (props) => {
     setHsnCode('')
     setQuantity(1)
     setCostPrice(0)
-    setSellPrice(0)
     setMRP(0)
-    setDiscountAmount(0)
     setDiscountPercentage(0)
     setTax(0)
     setIsTaxInclusive(true)
   }
 
 
-  const OnEditButtonClicked = () => {
+  const OnEditButtonClicked = async () => {
     if (isEditMode) {
-      const updatedData = items.map(row =>
-        row.id === selectedId ? {
-          ...row, barcode: barcode, itemName: itemName, hsnCode: hsnCode, quantity: quantity, costPrice: costPrice,
-          sellPrice: sellPrice, mrp: MRP, discountAmount: discountAmount, discountPercentage: discountPercentage, tax: tax, isTaxInclusive: isTaxInclusive
-        } : row
-      );
+      const itemDto = {
+        'id': selectedId, 'barcode': barcode, 'itemName': itemName, 'hsnCode': hsnCode, 'quantity': quantity, 'unit': selectedUnit,
+        'costPrice': costPrice, 'mrp': MRP, 'discountPercentage': discountPercentage, 'tax': tax,
+        'isTaxInclusive': isTaxInclusive,
+      };
+      const response = await postRequest(props.ipAddress + UpdateItem, itemDto)
+      if (response.ok) {
+        const updatedData = items.map(row =>
+          row.id === selectedId ? {
+            ...row, barcode: barcode, itemName: itemName, hsnCode: hsnCode, quantity: quantity, costPrice: costPrice,
+            mrp: MRP, discountPercentage: discountPercentage, tax: tax, isTaxInclusive: isTaxInclusive
+          } : row
+        );
+        setItems(updatedData);
+        OnClearButtonClicked()
+        setIsEditMode(!isEditMode)
+        props.notify('success', 'Item Updated')
+      }
+      else
+        props.notify('error', response.status)
+    }
+  }
 
-      setItems(updatedData);
+  const OnDeleteButtonClicked = async () => {
+    if (selectedId === 0) {
+      alert('Please select a record to delete')
+      return;
+    }
+    const itemDto = {'id': selectedId}
+    const response = await postRequest(props.ipAddress + DeleteItem, itemDto)
+    if (response.ok) {
+      const newData = items.filter((item) => item.id !== selectedId);
+      setItems(newData)
+      setSelectedId(0);
+      props.notify('success', 'Item Deleted')
+    }
+    else
+      props.notify('error', response.status)
+  }
+
+  const OnAddToBarcodeButtonClicked = async () => {
+    if (selectedId === 0) {
+      alert('Please select a record to Add in Barcode')
+      return;
+    }
+
+    const response = await postRequest(props.ipAddress + AddToBarcode, { 'id': selectedId })
+    if (response.ok) {
+      const data = await response.json();
+      setItems([...items, data])
       OnClearButtonClicked()
+      props.notify('success', 'Item added')
     }
-    setIsEditMode(!isEditMode)
-  }
-
-  const OnDeleteButtonClicked = () => {
-    if (selectedId === 0) {
-      alert('Please select a record to delete')
-      return;
-    }
-    const newData = items.filter((item) => item.id !== selectedId);
-    setItems(newData)
-    setSelectedId(0);
-  }
-
-  const OnAddToBarcodeButtonClicked = () => {
-    if (selectedId === 0) {
-      alert('Please select a record to delete')
-      return;
-    }
-    const newData = items.filter((item) => item.id !== selectedId);
-    setItems(newData)
-    setSelectedId(0);
+    else
+      props.notify('error', response.status)
   }
 
   const onSelectionChanged = () => {
@@ -158,9 +178,7 @@ const Items = (props) => {
     setHsnCode(item.hsnCode)
     setQuantity(item.quantity)
     setCostPrice(item.costPrice)
-    setSellPrice(item.sellPrice)
     setMRP(item.mrp)
-    setDiscountAmount(item.discountAmount)
     setDiscountPercentage(item.discountPercentage)
     setTax(item.tax)
     setIsTaxInclusive(item.isTaxInclusive)
@@ -179,7 +197,7 @@ const Items = (props) => {
       .then(response => response.json())
       .then(data => {
         const url = data.backendUrl + 'api/';
-        fetch(url + 'Item')
+        fetch(url + GetAllItems)
           .then(response => {
             if (!response.ok) {
               throw new Error('Network response was not ok');
@@ -212,9 +230,7 @@ const Items = (props) => {
         <CustomInput className='customInput' label={'Quantity'} text={quantity} setText={setQuantity} />
         <Dropdown label={'Select Unit'} options={unitOptions} onSelect={handleSelectedUnit} />
         <CustomInput className='customInput' label={'CostPrice'} text={costPrice} setText={setCostPrice} />
-        <CustomInput className='customInput' label={'SellPrice'} text={sellPrice} setText={setSellPrice} />
         <CustomInput className='customInput' label={'MRP'} text={MRP} setText={setMRP} />
-        <CustomInput className='customInput' label={'Discount Amount'} text={discountAmount} setText={setDiscountAmount} />
         <CustomInput className='customInput' label={'Discount Percentage'} text={discountPercentage} setText={setDiscountPercentage} />
         <CustomInput className='customInput' label={'Tax'} text={tax} setText={setTax} />
         <label>%</label>
@@ -228,7 +244,7 @@ const Items = (props) => {
       {!isEditMode && <button onClick={OnDeleteButtonClicked}>Delete</button>}
       {!isEditMode && <button onClick={OnAddToBarcodeButtonClicked}>Add to Barcode</button>}
       {!isEditMode && <div className="ag-theme-quartz" >
-        <AgGridReact rowData={items} columnDefs={colDefs}
+        <AgGridReact rowData={items} columnDefs={colDefs} embedFullWidthRows={true}
           ref={gridRef}
           rowSelection={'single'}
           onSelectionChanged={() => onSelectionChanged()}
