@@ -225,17 +225,17 @@ const Items = (props) => {
   return (
     <div className='itemsPage'>
       <div className='inputForm'>
-        <CustomInput className='customInput' label={'Barcode'} text={barcode} setText={setBarcode} />
-        <CustomInput className='customInput' label={'ItemName'} text={itemName} setText={setItemName} />
-        <CustomInput className='customInput' label={'Quantity'} text={quantity} setText={setQuantity} />
+        <CustomInput className='customInput' label={'Barcode'} text={barcode} type={'text'} setText={setBarcode} />
+        <CustomInput className='customInput' label={'ItemName'} text={itemName} type={'text'} setText={setItemName} />
+        <CustomInput className='customInput' label={'Quantity'} text={quantity} type={'number'} setText={setQuantity} />
         <Dropdown label={'Select Unit'} options={unitOptions} onSelect={handleSelectedUnit} />
-        <CustomInput className='customInput' label={'CostPrice'} text={costPrice} setText={setCostPrice} />
-        <CustomInput className='customInput' label={'MRP'} text={MRP} setText={setMRP} />
-        <CustomInput className='customInput' label={'Discount Percentage'} text={discountPercentage} setText={setDiscountPercentage} />
-        <CustomInput className='customInput' label={'Tax'} text={tax} setText={setTax} />
+        <CustomInput className='customInput' label={'CostPrice'} type={'number'} text={costPrice} setText={setCostPrice} />
+        <CustomInput className='customInput' label={'MRP'} text={MRP} type={'number'} setText={setMRP} />
+        <CustomInput className='customInput' label={'Discount Percentage'} type={'number'} text={discountPercentage} setText={setDiscountPercentage} />
+        <CustomInput className='customInput' label={'Tax'} text={tax} type={'number'} setText={setTax} />
         <label>%</label>
         <CustomCheckBox className='customInput' label={'Tax Inclusive'} isChecked={isTaxInclusive} setIsChecked={setIsTaxInclusive} />
-        <CustomInput className='customInput' label={'HSN Code'} text={hsnCode} setText={setHsnCode} />
+        <CustomInput className='customInput' label={'HSN Code'} text={hsnCode} type={'text'} setText={setHsnCode} />
 
       </div>
       {!isEditMode && <button onClick={OnAddItemClicked}>Add Item</button>}
