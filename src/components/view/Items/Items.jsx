@@ -152,10 +152,10 @@ const Items = (props) => {
 
     const response = await postRequest(props.ipAddress + AddToBarcode, { 'id': selectedId })
     if (response.ok) {
-      const data = await response.json();
-      setItems([...items, data])
-      OnClearButtonClicked()
-      props.notify('success', 'Item added')
+      // const data = await response.json();
+      // setItems([...items, data])
+      // OnClearButtonClicked()
+      props.notify('success', 'Item added to Barcode')
     }
     else
       props.notify('error', response.status)
