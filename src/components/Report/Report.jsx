@@ -27,11 +27,11 @@ const Report = (props) => {
                 {props.billItems.length > 0 && props.billItems.map((item, index) => (
                     <tr key={index}>
                         {/* <td>{item.barcode}</td> */}
-                        <td>{item.itemName}</td>
-                        <td style={{textAlign: 'right'}}>{item.price}</td>
-                        <td style={{textAlign: 'right'}}>{item.quantity}</td>
-                        <td style={{textAlign: 'right'}}>{item.discountPercentage} %</td>
-                        <td style={{textAlign: 'right'}}>{(100 - item.discountPercentage) * 0.01 * item.price * item.quantity}</td>
+                        <td style={{fontSize: '15px'}}>{item.itemName}</td>
+                        <td style={{textAlign: 'right', fontSize: '15px'}}>{item.price}</td>
+                        <td style={{textAlign: 'right', fontSize: '15px'}}>{item.quantity}</td>
+                        <td style={{textAlign: 'right', fontSize: '15px'}}>{item.discountPercentage} %</td>
+                        <td style={{textAlign: 'right', fontSize: '15px'}}>{(100 - item.discountPercentage) * 0.01 * item.price * item.quantity}</td>
                     </tr>
                 ))}
                 <tr>
