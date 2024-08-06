@@ -3,19 +3,15 @@ import React, { useRef, useEffect, useState } from 'react';
 import { ReactToPrint } from 'react-to-print';
 import Table from '../../TableContainer/Table';
 import Report from '../../Report/Report';
-// import { AgGridReact } from 'ag-grid-react';
-// import "ag-grid-community/styles/ag-grid.css";
-// import "ag-grid-community/styles/ag-theme-quartz.css";
 import CustomInput from '../../CustomInput/CustomInput';
 import { formatDate } from '../../../Helper/dateHelper.js'
 import { CreateBill, GetAllItems } from '../../../APIEndpoints.js'
-
 
 const Billing = () => {
   // const [maxId, setMaxId] = useState(0);
   // const emptyBillItem = {
   //   "id": maxId, 'itemId': 0, "barcode": '', "itemName": '',
-  //   "price": 0, "quantity": 1, "discountAmount": 0
+  //   "price": 0, "quantity": 1, "discountPercentage": 0
   // }
   const [ipAddress, setIpAddress] = useState(null);
   // const ipAddress = process.env.REACT_APP_backendUrl+"api/"
@@ -27,7 +23,7 @@ const Billing = () => {
   const [billItems, setBillItems] = useState([{
     // "id": maxId, 
     'itemId': 0, "barcode": '', "itemName": '',
-    "price": 0, "quantity": 1, "discountAmount": 0
+    "price": 0, "quantity": 1, "discountPercentage": 0
   }]);
   const [billNumber, setBillNumber] = useState();
   const [customerName, setCustomerName] = useState('');
@@ -46,7 +42,7 @@ const Billing = () => {
     const billItem = {
       // "id": 0, 
       'itemId': 0, "barcode": '', "itemName": '',
-      "price": 0, "quantity": 1, "discountAmount": 0
+      "price": 0, "quantity": 1, "discountPercentage": 0
     }
     setBillItems([billItem])
   }
@@ -54,7 +50,7 @@ const Billing = () => {
   const addBlankRow = () => {
     const billItem = {
       'itemId': 0, "barcode": '', "itemName": '',
-      "price": 0, "quantity": 1, "discountAmount": 0
+      "price": 0, "quantity": 1, "discountPercentage": 0
     }
     // setMaxId(maxId + 1);
     setBillItems([...billItems, billItem]);
@@ -80,7 +76,7 @@ const Billing = () => {
             const item = {
               // "id": id, 
               "itemId": dbItem.id, "barcode": dbItem.barcode, "itemName": dbItem.itemName,
-              "price": dbItem.sellPrice, "quantity": 1, "discountAmount": 0
+              "price": dbItem.mrp, "quantity": 1, "discountPercentage": dbItem.discountPercentage
             }
             setBillItems([item, ...billItems]);
           }
@@ -193,7 +189,7 @@ const Billing = () => {
     }
   };
 
-  const createBill = (billItemList, discountAmount, modeOfPayment, customerName, customerAddress, isPrintBillEnable) => {
+  const createBill = (billItemList, discountPercentage, modeOfPayment, customerName, customerAddress, isPrintBillEnable) => {
     try {
       const billItemDto = [];
       billItemList.forEach(ele => {
@@ -205,8 +201,8 @@ const Billing = () => {
           "itemName": ele.itemName,
           "quantity": ele.quantity,
           "price": ele.price,
-          "discountAmount": ele.discountAmount,
-          "amount": ele.quantity * ele.price - ele.discountAmount,
+          "discountPercentage": ele.discountPercentage,
+          "amount": (100 - ele.discountPercentage) * 0.01 * ele.price * ele.quantity,
         });
       });
 
@@ -214,11 +210,11 @@ const Billing = () => {
       let subTotal = 0;
       let totalAmount = 0;
       billItemDto.forEach(x => subTotal += x.amount);
-      totalAmount = subTotal - discountAmount + gst;
+      totalAmount = subTotal - discountPercentage + gst;
       const bill = {
         "id": 0,
         "subTotal": subTotal,
-        "discountAmount": discountAmount,
+        "discountPercentage": discountPercentage,
         "totalAmount": totalAmount,
         "modeOfPayment": modeOfPayment,
         "customerName": customerName,

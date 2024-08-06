@@ -9,7 +9,7 @@ const Table = ({ addBlankRow, items, setBillItems }) => {
 
   const getTotalSum = (items) => {
     let sumTotal = 0;
-    items.forEach(x => sumTotal += x.price * x.quantity);
+    items.forEach(x => sumTotal += (100 - x.discountPercentage) * 0.01 * x.price * x.quantity);
 
     return sumTotal;
   };
@@ -69,14 +69,14 @@ const Table = ({ addBlankRow, items, setBillItems }) => {
     //   }
     //   return item;
     // });
-    
+
     for (let i = 0; i < items.length; i++) {
       if (i === index) {
-        if(field === 'itemName'){
+        if (field === 'itemName') {
           items[i].itemName = e.target.value
-        } else if(field === 'price'){
+        } else if (field === 'price') {
           items[i].price = Number(e.target.value)
-        } else if(field === 'quantity'){
+        } else if (field === 'quantity') {
           items[i].quantity = Number(e.target.value)
         }
       }
@@ -86,8 +86,8 @@ const Table = ({ addBlankRow, items, setBillItems }) => {
   };
 
   const handleDelete = (index) => {
-      const newDate = items.filter((item, i) => i !== index);
-      setBillItems(newDate);
+    const newDate = items.filter((item, i) => i !== index);
+    setBillItems(newDate);
   };
 
   useEffect(() => {
@@ -109,6 +109,7 @@ const Table = ({ addBlankRow, items, setBillItems }) => {
                 <th>ItemName</th>
                 <th>Price</th>
                 <th>Qty</th>
+                <th>Discount %</th>
                 <th>Amount</th>
               </tr>
             </thead>
@@ -129,6 +130,7 @@ const Table = ({ addBlankRow, items, setBillItems }) => {
                   </td>
                   <td>
                     <input type="number"
+                      style={{ textAlign: 'right' }}
                       id={`input-${index}-${3}`}
                       onChange={(e) => handleInputChange(e, index, 'price')}
                       value={item.price}
@@ -138,13 +140,26 @@ const Table = ({ addBlankRow, items, setBillItems }) => {
                   <td>
                     <input
                       type="number"
+                      style={{ textAlign: 'right' }}
                       id={`input-${index}-${4}`}
                       onChange={(e) => handleInputChange(e, index, 'quantity')}
                       value={item.quantity}
                       onKeyDown={(e) => handleKeyDown(e, index, 4)}
                     />
                   </td>
-                  <td>{item.price * item.quantity}</td>
+                  <td>
+                    <input
+                      style={{ textAlign: 'right' }}
+                      type="number"
+                      id={`input-${index}-${5}`}
+                      onChange={(e) => handleInputChange(e, index, 'discountPercentage')}
+                      value={item.discountPercentage}
+                      onKeyDown={(e) => handleKeyDown(e, index, 5)}
+                    />
+                  </td>
+                  <td style={{ textAlign: 'right' }}>
+                    {(100 - item.discountPercentage) * 0.01 * item.price * item.quantity}
+                  </td>
                 </tr>
               ))}
               {emptyArr.length > 0 && emptyArr.map((item, index) => (
@@ -158,6 +173,7 @@ const Table = ({ addBlankRow, items, setBillItems }) => {
                 </tr>
               ))}
               <tr>
+                <td></td>
                 <td></td>
                 <td></td>
                 <td></td>
