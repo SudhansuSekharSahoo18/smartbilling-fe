@@ -15,29 +15,32 @@ const Report = (props) => {
           <table border="1">
             <thead>
                 <tr>
-                    <th>Barcode</th>
+                    {/* <th>Barcode</th> */}
                     <th>ItemName</th>
                     <th>Price</th>
                     <th>Qty</th>
+                    <th>Discount</th>
                     <th>Amount</th>
                 </tr>
             </thead>
             <tbody>
                 {props.billItems.length > 0 && props.billItems.map((item, index) => (
                     <tr key={index}>
-                        <td>{item.barcode}</td>
+                        {/* <td>{item.barcode}</td> */}
                         <td>{item.itemName}</td>
-                        <td>{item.price}</td>
-                        <td>{item.quantity}</td>
-                        <td>{item.price * item.quantity}</td>
+                        <td style={{textAlign: 'right'}}>{item.price}</td>
+                        <td style={{textAlign: 'right'}}>{item.quantity}</td>
+                        <td style={{textAlign: 'right'}}>{item.discountPercentage} %</td>
+                        <td style={{textAlign: 'right'}}>{(100 - item.discountPercentage) * 0.01 * item.price * item.quantity}</td>
                     </tr>
                 ))}
                 <tr>
+                    {/* <td></td> */}
                     <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
-                    <td>{props.getTotalSum()}</td>
+                    <td style={{textAlign: 'right'}}>{props.getTotalSum()}</td>
                 </tr>
             </tbody>
           </table>
