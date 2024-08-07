@@ -10,8 +10,8 @@ const Table = ({ addBlankRow, items, setBillItems }) => {
   const getTotalSum = (items) => {
     let sumTotal = 0;
     items.forEach(x => sumTotal += (100 - x.discountPercentage) * 0.01 * x.price * x.quantity);
-
-    return sumTotal;
+    const value = parseFloat(sumTotal)
+    return value.toFixed(2);
   };
 
   const handleKeyDown = (event, row, col) => {
