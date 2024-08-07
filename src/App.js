@@ -64,6 +64,9 @@ const App = () => {
             <li className={selectedTab === 'saleReport' ? 'selectedNav' : ''}>
               <Link to="/saleReport"><div onClick={() => setSelectedTab('saleReport')}>Sale Report</div></Link>
             </li>
+            <li className={selectedTab === 'saleReport' ? 'selectedNav' : ''}>
+              <Link to="/setting"><div onClick={() => setSelectedTab('saleReport')}>Setting</div></Link>
+            </li>
           </ul>
         </nav>
         <ToastContainer />
