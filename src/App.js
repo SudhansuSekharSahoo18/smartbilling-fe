@@ -48,6 +48,7 @@ const App = () => {
     <Router>
       <div className="app">
         <nav className="nav">
+        <div>vs 1.0.1</div>
           <ul>
             <li className={selectedTab === '' ? 'selectedNav' : ''}>
               <Link to="/"><div onClick={() => setSelectedTab('')}>Stock</div></Link>

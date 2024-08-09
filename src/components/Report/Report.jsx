@@ -19,7 +19,7 @@ const Report = (props) => {
                     <tr>
                         {/* <th>Barcode</th> */}
                         <th style={{ fontSize: '15px', fontWeight: 'bold' }}>ItemName</th>
-                        <th style={{ fontSize: '15px', fontWeight: 'bold' }}>Price</th>
+                        <th style={{ fontSize: '15px', fontWeight: 'bold' }}>MRP</th>
                         <th style={{ fontSize: '15px', fontWeight: 'bold' }}>Qty</th>
                         <th style={{ fontSize: '15px', fontWeight: 'bold' }}>Discount</th>
                         <th style={{ fontSize: '15px', fontWeight: 'bold' }}>Amount</th>
@@ -36,13 +36,14 @@ const Report = (props) => {
                             <td style={{ textAlign: 'right', fontSize: '30px', fontWeight: 'bold' }}>{(100 - item.discountPercentage) * 0.01 * item.price * item.quantity}</td>
                         </tr>
                     ))}
+                    <div style={{ height: '20px' }}></div>
                     <tr>
                         {/* <td></td> */}
                         <td></td>
                         <td></td>
                         <td></td>
                         <td></td>
-                        <td style={{ textAlign: 'right', fontSize: '30px', fontWeight: 'bold' }}>{props.getTotalSum()}</td>
+                        <td style={{ textAlign: 'right', fontSize: '40px', fontWeight: 'bold' }}>{props.getTotalSum()}</td>
                     </tr>
                 </tbody>
             </table>
@@ -57,7 +58,8 @@ const Report = (props) => {
             <div style={{ fontSize: '20px', fontWeight: 'bold', margin: '0px' }}>Subject to {props.shopName} No cash return No gurantee on the products</div>
             <div style={{ fontSize: '20px', fontWeight: 'bold', margin: '0px' }}>Exchange within 15 days with barcode sticker & bill</div>
             <div style={{ fontSize: '20px', fontWeight: 'bold', margin: '0px' }}>Thank you Shopping with us</div>
-            <div style={{ fontSize: '20px', fontWeight: 'bold', margin: '0px' }}>Visit again!!!</div>
+            <div style={{ height: '20px' }}></div>
+            <div style={{ fontSize: '25px', fontWeight: 'bold', margin: '0px', textAlign: 'center'}}>Visit again!!!</div>
         </div>
     );
 };
