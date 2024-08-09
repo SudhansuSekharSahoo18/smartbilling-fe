@@ -33,7 +33,7 @@ const Report = (props) => {
                             <td style={{ textAlign: 'right', fontSize: '30px', fontWeight: 'bold' }}>{item.price}</td>
                             <td style={{ textAlign: 'right', fontSize: '30px', fontWeight: 'bold' }}>{item.quantity}</td>
                             <td style={{ textAlign: 'right', fontSize: '30px', fontWeight: 'bold' }}>{item.discountPercentage}</td>
-                            <td style={{ textAlign: 'right', fontSize: '30px', fontWeight: 'bold' }}>{(100 - item.discountPercentage) * 0.01 * item.price * item.quantity}</td>
+                            <td style={{ textAlign: 'right', fontSize: '30px', fontWeight: 'bold' }}>{parseFloat((100 - item.discountPercentage) * 0.01 * item.price * item.quantity).toFixed(2)}</td>
                         </tr>
                     ))}
                     <div style={{ height: '20px' }}></div>
