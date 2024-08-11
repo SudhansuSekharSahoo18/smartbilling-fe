@@ -20,8 +20,10 @@ const App = () => {
       toast.error(message)
     else if(type == 'warning')
       toast.warning(message)
+    else if(type == 'success')
+        toast.success(message)
     else
-      toast.success(message)
+      toast.update(message)
   }
   // const history = useHistory();
 

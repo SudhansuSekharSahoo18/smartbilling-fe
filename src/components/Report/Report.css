@@ -6,11 +6,11 @@
 }
 .report table {
     margin: 10px 0px;
-    width: 100%;
 }
 
 .report th, .report td {
     font-size: 10px;
+    border-bottom: 1px dotted black; 
 }
 
 .report div {

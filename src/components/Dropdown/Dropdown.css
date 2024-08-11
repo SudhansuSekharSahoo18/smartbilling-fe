@@ -1,6 +1,7 @@
 .dropdown {
   position: relative;
   display: inline-block;
+  margin-right: 20px;
   /* background-color: cyan; */
 }
 .dropdown label{
@@ -37,5 +38,4 @@
 
 .textarea{
   width: 100px;
-  background-color: white;
 }

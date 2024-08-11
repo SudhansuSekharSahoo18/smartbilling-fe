@@ -4,7 +4,7 @@ import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
 import { ReactToPrint } from 'react-to-print';
 import BarcodeReport from '../../Report/BarcodeReport';
-import { GetBarcodeList } from '../../../APIEndpoints.js'
+import { DeleteBarcode, GetBarcodeList } from '../../../APIEndpoints.js'
 import FolderChooser from '../../FolderChooser/FolderChooser.jsx';
 import { GenerateBarcode } from '../../../APIEndpoints.js'
 
@@ -33,17 +33,42 @@ const BarcodeView = ({ notify, ipAddress, barcodeGenerateFilePath }) => {
     { field: "quantity", editable: true },
   ]);
 
-  const OnDeleteButtonClicked = () => {
+  const OnDeleteButtonClicked = async () => {
     if (selectedId === 0) {
       alert('Please select a record to delete')
       return;
     }
-    const newData = rowData.filter((item) => item.id !== selectedId);
-    setRowData(newData)
-    setSelectedId(0);
+    const deletedBarcode = rowData.filter((item) => item.id === selectedId);
+    console.log('deleted id -> ' + deletedBarcode[0].id)
+    if (deletedBarcode[0].id !== undefined) {
+      try {
+        const url = ip + DeleteBarcode + deletedBarcode[0].id ;
+        console.log(url)
+        const response = await fetch(url, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+        });
+        console.log(response)
+        
+        if (response.ok) {
+          console.log('Barcode removed')
+          notify('Barcode removed')
+          const newData = rowData.filter((item) => item.id !== selectedId);
+          setRowData(newData)
+          setSelectedId(0);
+        }
+        else {
+          throw new Error('Network response was not ok');
+        }
+      } catch (error) {
+        notify('error', error.message);
+      }
+    }
   }
 
-  
+
   const onSelectionChanged = () => {
     const selectedNodes = gridRef.current.api.getSelectedNodes();
     if (selectedNodes.length > 0) {
@@ -51,7 +76,7 @@ const BarcodeView = ({ notify, ipAddress, barcodeGenerateFilePath }) => {
       const temp = selectedData[0];
       setSelectedId(temp['id']);
     }
-  };  
+  };
 
   const OnGenerateBarcodeClicked = async () => {
     const url = ip + GenerateBarcode;
@@ -62,7 +87,7 @@ const BarcodeView = ({ notify, ipAddress, barcodeGenerateFilePath }) => {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({'filePath': barcodeFilePath, 'barcodeList': rowData})
+        body: JSON.stringify({ 'filePath': barcodeFilePath, 'barcodeList': rowData })
       });
 
       if (!response.ok) {
@@ -133,9 +158,9 @@ const BarcodeView = ({ notify, ipAddress, barcodeGenerateFilePath }) => {
         ref={reactToPrintRef}
       /> */}
       <AgGridReact rowData={rowData} columnDefs={colDefs}
-          ref={gridRef}
-          rowSelection={'single'}
-          onSelectionChanged={() => onSelectionChanged()}
+        ref={gridRef}
+        rowSelection={'single'}
+        onSelectionChanged={() => onSelectionChanged()}
       />
       <div ref={componentRef}>
         <BarcodeReport barcodeList={rowData} shopName={shopName} />

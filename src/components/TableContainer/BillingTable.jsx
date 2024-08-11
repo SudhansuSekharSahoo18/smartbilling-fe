@@ -1,18 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import './Table.css';
+import './BillingTable.css';
+import { calculateTotalMrp, calculateNetAmount, calculateTotalDiscount } from './../view/Billing/BillingFunctions.js'
 
-const Table = ({ addBlankRow, items, setBillItems }) => {
+const BillingTable = ({ addBlankRow, items, setBillItems }) => {
 
   const [emptyArr, setEmptyArr] = useState([1, 2, 3, 4, 5]);
   const [flag, setFlag] = useState(false);
   const [focusedIndex, setFocusedIndex] = useState([0, 0]);
-
-  const getTotalSum = (items) => {
-    let sumTotal = 0;
-    items.forEach(x => sumTotal += (100 - x.discountPercentage) * 0.01 * x.price * x.quantity);
-    const value = parseFloat(sumTotal)
-    return value.toFixed(2);
-  };
 
   const handleKeyDown = (event, row, col) => {
     if (event.key === 'ArrowRight') {
@@ -57,25 +51,12 @@ const Table = ({ addBlankRow, items, setBillItems }) => {
   }
 
   const handleInputChange = (e, index, field) => {
-
-    // const index = parseInt((e.target.id).split('-')[1])
-    // console.log('index->' + id)
-    // console.log('index->' + index)
-
-    // const newData = items.map((item) => {
-    //   // console.log(item.id + ' == ' + id)
-    //   if (item.id === id) {
-    //     return { ...item, [field]: e.target.value };
-    //   }
-    //   return item;
-    // });
-
     for (let i = 0; i < items.length; i++) {
       if (i === index) {
         if (field === 'itemName') {
           items[i].itemName = e.target.value
-        } else if (field === 'price') {
-          items[i].price = Number(e.target.value)
+        } else if (field === 'mrp') {
+          items[i].mrp = Number(e.target.value)
         } else if (field === 'quantity') {
           items[i].quantity = Number(e.target.value)
         }
@@ -117,7 +98,10 @@ const Table = ({ addBlankRow, items, setBillItems }) => {
               {items.length > 0 && items.map((item, index) => (
                 <tr key={index}>
                   <td>
-                    <button onClick={() => handleDelete(index)}>Delete</button>
+                    <button onClick={() => handleDelete(index)}>
+                      {/* <img src={DeleteIcon} alt="Delete"/> */}
+                      Delete
+                    </button>
                   </td>
                   <td>{item.barcode}</td>
                   <td>
@@ -129,16 +113,16 @@ const Table = ({ addBlankRow, items, setBillItems }) => {
                     />
                   </td>
                   <td>
-                    <input type="number"
+                    <input className='numberInput'
                       style={{ textAlign: 'right' }}
                       id={`input-${index}-${3}`}
-                      onChange={(e) => handleInputChange(e, index, 'price')}
-                      value={item.price}
+                      onChange={(e) => handleInputChange(e, index, 'mrp')}
+                      value={item.mrp}
                       onKeyDown={(e) => handleKeyDown(e, index, 3)}
                     />
                   </td>
                   <td>
-                    <input
+                    <input className='numberInput'
                       type="number"
                       style={{ textAlign: 'right' }}
                       id={`input-${index}-${4}`}
@@ -148,7 +132,7 @@ const Table = ({ addBlankRow, items, setBillItems }) => {
                     />
                   </td>
                   <td>
-                    <input
+                    <input className='numberInput'
                       style={{ textAlign: 'right' }}
                       type="number"
                       id={`input-${index}-${5}`}
@@ -158,7 +142,7 @@ const Table = ({ addBlankRow, items, setBillItems }) => {
                     />
                   </td>
                   <td style={{ textAlign: 'right' }}>
-                    {(100 - item.discountPercentage) * 0.01 * item.price * item.quantity}
+                  {(100 - item.discountPercentage) * 0.01 * item.mrp * item.quantity}
                   </td>
                 </tr>
               ))}
@@ -179,7 +163,7 @@ const Table = ({ addBlankRow, items, setBillItems }) => {
                 <td></td>
                 <td></td>
                 <td></td>
-                <td>{getTotalSum(items)}</td>
+              <td>{calculateNetAmount(items)}</td>
               </tr>
             </tbody>
           </table>
@@ -190,4 +174,4 @@ const Table = ({ addBlankRow, items, setBillItems }) => {
   );
 };
 
-export default Table;
+export default BillingTable;

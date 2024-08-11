@@ -1,9 +1,10 @@
 import './Billing.css';
 import React, { useRef, useEffect, useState } from 'react';
 import { ReactToPrint } from 'react-to-print';
-import Table from '../../TableContainer/Table';
+import BillingTable from '../../TableContainer/BillingTable.jsx';
 import Report from '../../Report/Report';
 import CustomInput from '../../CustomInput/CustomInput';
+import Dropdown from '../../Dropdown/Dropdown';
 import { formatDate } from '../../../Helper/dateHelper.js'
 import { CreateBill, GetAllItems } from '../../../APIEndpoints.js'
 
@@ -18,21 +19,31 @@ const Billing = () => {
   const componentRef = useRef(null);
   const reactToPrintRef = useRef();
   const [inputValue, setInputValue] = useState('');
-  // const [items, setItems] = useState([]);
   const [products, setProducts] = useState([]);
   const [billItems, setBillItems] = useState([{
     // "id": maxId, 
     'itemId': 0, "barcode": '', "itemName": '',
-    "price": 0, "quantity": 1, "discountPercentage": 0
+    "mrp": 0, "quantity": 1, "discountPercentage": 0
   }]);
   const [billNumber, setBillNumber] = useState();
   const [customerName, setCustomerName] = useState('');
+  const [customerMobileNumber, setCustomerMobileNumber] = useState('');
+  const [modeOfPayment, setModeOfPayment] = useState('');
   const [dateTime, setDateTime] = useState('');
   const [shopName, setShopName] = useState('Shop Name Not Found');
   const [shopAddress, setShopAddress] = useState('Address not found');
   const [shopGstNumber, setShopGstNumber] = useState('GST number not found');
   const shallPrintBill = useRef(false);
+  const paymentOptions = [
+    { value: 1, label: 'Cash' },
+    { value: 2, label: 'UPI' },
+    { value: 3, label: 'Credit Card' },
+    { value: 4, label: 'Debit Card' },
+  ];
 
+  const handleSelectedPayment = (option) => {
+    setModeOfPayment(option);
+  };
   const handleKeyDown = (event) => {
     if (event.key === 'Enter') {
       onSubmitButtonClick();
@@ -42,15 +53,16 @@ const Billing = () => {
     const billItem = {
       // "id": 0, 
       'itemId': 0, "barcode": '', "itemName": '',
-      "price": 0, "quantity": 1, "discountPercentage": 0
+      "mrp": 0, "quantity": 1, "discountPercentage": 0
     }
     setBillItems([billItem])
+    setCustomerName('')
   }
 
   const addBlankRow = () => {
     const billItem = {
       'itemId': 0, "barcode": '', "itemName": '',
-      "price": 0, "quantity": 1, "discountPercentage": 0
+      "mrp": 0, "quantity": 1, "discountPercentage": 0
     }
     // setMaxId(maxId + 1);
     setBillItems([...billItems, billItem]);
@@ -65,10 +77,10 @@ const Billing = () => {
         let item = billItems.find(x => x.itemId === dbItem.id)
         if (item === undefined) {
           // const id = billItems.length + 1;
-          if (billItems.length === 1 && billItems[0].itemName === '' && billItems[0].price === 0) {
+          if (billItems.length === 1 && billItems[0].itemName === '' && billItems[0].mrp === 0) {
             const item = {
               "itemId": dbItem.id, "barcode": dbItem.barcode, "itemName": dbItem.itemName,
-              "price": dbItem.mrp, "quantity": 1, "discountPercentage": dbItem.discountPercentage
+              "mrp": dbItem.mrp, "quantity": 1, "discountPercentage": dbItem.discountPercentage
             }
             setBillItems([item]);
           }
@@ -76,7 +88,7 @@ const Billing = () => {
             const item = {
               // "id": id, 
               "itemId": dbItem.id, "barcode": dbItem.barcode, "itemName": dbItem.itemName,
-              "price": dbItem.mrp, "quantity": 1, "discountPercentage": dbItem.discountPercentage
+              "mrp": dbItem.mrp, "quantity": 1, "discountPercentage": dbItem.discountPercentage
             }
             setBillItems([item, ...billItems]);
           }
@@ -92,13 +104,6 @@ const Billing = () => {
         alert('No item found');
       }
     }
-  };
-
-  const getTotalSum = () => {
-    let sumTotal = 0;
-    billItems.forEach(x => sumTotal += (100 - x.discountPercentage) * 0.01 * x.price * x.quantity);
-    const value = parseFloat(sumTotal)
-    return value.toFixed(2);
   };
 
   const handleCtrlP = () => {
@@ -156,11 +161,11 @@ const Billing = () => {
           .catch(error => {
             // alert(error);
             const defaultItems = [
-              { id: 1, barcode: "101", itemName: 'Saree', price: 500 },
-              { id: 2, barcode: "102", itemName: 'Jeans', price: 1500 },
-              { id: 3, barcode: "103", itemName: 'Shirt', price: 400 },
-              { id: 4, barcode: "104", itemName: 'Socks', price: 150 },
-              { id: 5, barcode: "105", itemName: 'Lungi', price: 80 },
+              { id: 1, barcode: "101", itemName: 'Saree', mrp: 500 },
+              { id: 2, barcode: "102", itemName: 'Jeans', mrp: 1500 },
+              { id: 3, barcode: "103", itemName: 'Shirt', mrp: 400 },
+              { id: 4, barcode: "104", itemName: 'Socks', mrp: 150 },
+              { id: 5, barcode: "105", itemName: 'Lungi', mrp: 80 },
             ];
             setProducts(defaultItems)
             // setLoading(false);
@@ -189,7 +194,7 @@ const Billing = () => {
     }
   };
 
-  const createBill = (billItemList, discountPercentage, modeOfPayment, customerName, customerAddress, isPrintBillEnable) => {
+  const createBill = (billItemList, discountPercentage, modeOfPayment, customerName, customerMobileNumber, customerAddress, isPrintBillEnable) => {
     try {
       const billItemDto = [];
       billItemList.forEach(ele => {
@@ -200,9 +205,9 @@ const Billing = () => {
           "barcode": ele.barcode,
           "itemName": ele.itemName,
           "quantity": ele.quantity,
-          "price": ele.price,
+          "mrp": ele.mrp,
           "discountPercentage": ele.discountPercentage,
-          "amount": (100 - ele.discountPercentage) * 0.01 * ele.price * ele.quantity,
+          "amount": (100 - ele.discountPercentage) * 0.01 * ele.mrp * ele.quantity,
         });
       });
 
@@ -218,6 +223,7 @@ const Billing = () => {
         "totalAmount": totalAmount,
         "modeOfPayment": modeOfPayment,
         "customerName": customerName,
+        "customerMobileNumber": customerMobileNumber,
         "customerAddress": customerAddress,
         "billItems": billItemDto,
       }
@@ -240,23 +246,24 @@ const Billing = () => {
         />
         <button onClick={onSubmitButtonClick}>Submit</button>
         <button onClick={onClearButtonClick}>Clear</button>
-        <button onClick={() => createBill(billItems, 0, 'cash', customerName, '', true)}>Create Bill</button>
+        <button onClick={() => createBill(billItems, 0, modeOfPayment, customerName, customerMobileNumber, '', true)}>Create Bill</button>
         <ReactToPrint
           // trigger={() => {
-          // return <button>Print Bill</button>;
+          // return <button>Pri t Bill</button>;
           // }}
           content={() => componentRef.current}
           ref={reactToPrintRef}
         />
         {/* <div>Customer Details</div> */}
 
-        <br />
-        <Table addBlankRow={addBlankRow} items={billItems} setBillItems={setBillItems}
-        />
-        <div className='customerDetails'>
-          <CustomInput className='customInput' label="Name" text={customerName} setText={setCustomerName} />
-          {/* <CustomInput className='customInput' label="Mobile Number" />
-          <CustomInput className='customInput' label="Address" /> */}
+        <div className='billingSection'>
+          <BillingTable addBlankRow={addBlankRow} items={billItems} setBillItems={setBillItems} 
+          />
+          <div className='customerDetails'>
+            <CustomInput className='customInput' label="Mobile" text={customerMobileNumber} setText={setCustomerMobileNumber} />
+            <CustomInput className='customInput' label="Name" text={customerName} setText={setCustomerName} />
+            <Dropdown label="Payment Mode" options={paymentOptions} onSelect={handleSelectedPayment} />
+          </div>
         </div>
       </div>
 
@@ -264,7 +271,7 @@ const Billing = () => {
       <div className='print-area'>
         <div ref={componentRef}>
           <Report billNumber={billNumber} customerName={customerName} dateTime={dateTime} billItems={billItems}
-            getTotalSum={getTotalSum} shopName={shopName} shopAddress={shopAddress} shopGSTNumber={shopGstNumber} />
+            shopName={shopName} shopAddress={shopAddress} shopGSTNumber={shopGstNumber} />
         </div>
       </div>
     </div>

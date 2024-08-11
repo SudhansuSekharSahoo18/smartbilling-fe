@@ -13,3 +13,4 @@ export const GenerateSaleReport = 'bill/GenerateSaleReport';
 // Barcode
 export const GetBarcodeList = 'barcode';
 export const GenerateBarcode = 'Barcode/GenerateBarcode';
+export const DeleteBarcode = 'Barcode/Delete/';

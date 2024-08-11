@@ -1,17 +1,14 @@
 .table-container {
   padding: 0px;
-  /* height: 500px; */
   background-color: white;
   border-radius: 10px;
 }
 
 .data-table table {
-  width: 100%;
   border-collapse: collapse;
   margin: 0px 0px;
   font-size: 18px;
   text-align: left;
-  /* height: 500px;  */
 }
 
 .data-table table th, table td {
@@ -42,7 +39,7 @@
   padding-top: 5px;
   padding-bottom: 5px;
   margin: 0px;
-  margin-left: 25px;
+  /* margin-left: 5px; */
   background-color: red;
 }
 
@@ -67,3 +64,11 @@
   text-align: left;
   font-size: 20px;
 }  
+
+.data-table table td {
+  width: 500px;
+}
+
+.numberInput{
+  width: 80px;
+}
