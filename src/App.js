@@ -10,6 +10,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import ErrorView from './components/view/Error/ErrorView';
 import ErrorPageNotFoundView from './components/view/Error/ErrorPageNotFoundVew';
+import Setting from './components/view/Setting/Setting';
 
 const App = () => {
   const [ipAddress, setIpAddress] = useState(null);
@@ -50,7 +51,7 @@ const App = () => {
     <Router>
       <div className="app">
         <nav className="nav">
-        <div>vs 1.0.1</div>
+        <div>vs 1.0.2</div>
           <ul>
             <li className={selectedTab === '' ? 'selectedNav' : ''}>
               <Link to="/"><div onClick={() => setSelectedTab('')}>Stock</div></Link>
@@ -67,8 +68,8 @@ const App = () => {
             <li className={selectedTab === 'saleReport' ? 'selectedNav' : ''}>
               <Link to="/saleReport"><div onClick={() => setSelectedTab('saleReport')}>Sale Report</div></Link>
             </li>
-            <li className={selectedTab === 'saleReport' ? 'selectedNav' : ''}>
-              <Link to="/setting"><div onClick={() => setSelectedTab('saleReport')}>Setting</div></Link>
+            <li className={selectedTab === 'setting' ? 'selectedNav' : ''}>
+              <Link to="/setting"><div onClick={() => setSelectedTab('setting')}>Setting</div></Link>
             </li>
           </ul>
         </nav>
@@ -81,6 +82,7 @@ const App = () => {
             <Route path="/generateBarcode" element={<BarcodeView notify={notify} ipAddress={ipAddress}
               barcodeGenerateFilePath={barcodeGenerateFilePath} />} />
             <Route path="/saleReport" element={<SaleReport notify={notify} ipAddress={ipAddress} />} />
+            <Route path="/setting" element={<Setting notify={notify} ipAddress={ipAddress} />} />
             <Route path="/error" element={<ErrorView message={'Not able to connect to server'} />} />
             <Route component={ErrorPageNotFoundView} />
           </Routes>
