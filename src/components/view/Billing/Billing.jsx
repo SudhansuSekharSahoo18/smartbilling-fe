@@ -9,11 +9,6 @@ import { formatDate } from '../../../Helper/dateHelper.js'
 import { CreateBill, GetAllItems } from '../../../APIEndpoints.js'
 
 const Billing = () => {
-  // const [maxId, setMaxId] = useState(0);
-  // const emptyBillItem = {
-  //   "id": maxId, 'itemId': 0, "barcode": '', "itemName": '',
-  //   "price": 0, "quantity": 1, "discountPercentage": 0
-  // }
   const [ipAddress, setIpAddress] = useState(null);
   // const ipAddress = process.env.REACT_APP_backendUrl+"api/"
   const componentRef = useRef(null);
@@ -23,7 +18,7 @@ const Billing = () => {
   const [billItems, setBillItems] = useState([{
     // "id": maxId, 
     'itemId': 0, "barcode": '', "itemName": '',
-    "mrp": 0, "quantity": 1, "discountPercentage": 0
+    "mrp": null, "quantity": 1, "discountPercentage": 0
   }]);
   const [billNumber, setBillNumber] = useState();
   const [customerName, setCustomerName] = useState('');
@@ -53,7 +48,7 @@ const Billing = () => {
     const billItem = {
       // "id": 0, 
       'itemId': 0, "barcode": '', "itemName": '',
-      "mrp": 0, "quantity": 1, "discountPercentage": 0
+      "mrp": null, "quantity": 1, "discountPercentage": 0
     }
     setBillItems([billItem])
     setCustomerName('')
@@ -62,7 +57,7 @@ const Billing = () => {
   const addBlankRow = () => {
     const billItem = {
       'itemId': 0, "barcode": '', "itemName": '',
-      "mrp": 0, "quantity": 1, "discountPercentage": 0
+      "mrp": null, "quantity": 1, "discountPercentage": 0
     }
     // setMaxId(maxId + 1);
     setBillItems([...billItems, billItem]);
@@ -86,7 +81,6 @@ const Billing = () => {
           }
           else {
             const item = {
-              // "id": id, 
               "itemId": dbItem.id, "barcode": dbItem.barcode, "itemName": dbItem.itemName,
               "mrp": dbItem.mrp, "quantity": 1, "discountPercentage": dbItem.discountPercentage
             }
@@ -197,9 +191,9 @@ const Billing = () => {
   const createBill = (billItemList, discountPercentage, modeOfPayment, customerName, customerMobileNumber, customerAddress, isPrintBillEnable) => {
     try {
       const billItemDto = [];
-      billItemList.forEach(ele => {
+      const list = billItemList.filter((element, i) => (element.mrp !== null));
+      list.forEach(ele => {
         billItemDto.push({
-          // "id": ele.id,
           "itemId": ele.itemId,
           "billId": 0,
           "barcode": ele.barcode,
@@ -257,7 +251,7 @@ const Billing = () => {
         {/* <div>Customer Details</div> */}
 
         <div className='billingSection'>
-          <BillingTable addBlankRow={addBlankRow} items={billItems} setBillItems={setBillItems} 
+          <BillingTable addBlankRow={addBlankRow} items={billItems} setBillItems={setBillItems}
           />
           <div className='customerDetails'>
             <CustomInput className='customInput' label="Mobile" text={customerMobileNumber} setText={setCustomerMobileNumber} />
