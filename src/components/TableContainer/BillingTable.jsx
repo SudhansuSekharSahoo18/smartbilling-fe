@@ -59,6 +59,8 @@ const BillingTable = ({ addBlankRow, items, setBillItems }) => {
           items[i].mrp = Number(e.target.value)
         } else if (field === 'quantity') {
           items[i].quantity = Number(e.target.value)
+        } else if (field === 'discountPercentage') {
+          items[i].discountPercentage = Number(e.target.value)
         }
       }
     }
@@ -134,7 +136,6 @@ const BillingTable = ({ addBlankRow, items, setBillItems }) => {
                   <td>
                     <input className='numberInput'
                       style={{ textAlign: 'right' }}
-                      type="number"
                       id={`input-${index}-${5}`}
                       onChange={(e) => handleInputChange(e, index, 'discountPercentage')}
                       value={item.discountPercentage}
@@ -142,7 +143,7 @@ const BillingTable = ({ addBlankRow, items, setBillItems }) => {
                     />
                   </td>
                   <td style={{ textAlign: 'right' }}>
-                  {(100 - item.discountPercentage) * 0.01 * item.mrp * item.quantity}
+                    {(100 - item.discountPercentage) * 0.01 * item.mrp * item.quantity}
                   </td>
                 </tr>
               ))}
@@ -163,7 +164,7 @@ const BillingTable = ({ addBlankRow, items, setBillItems }) => {
                 <td></td>
                 <td></td>
                 <td></td>
-              <td>{calculateNetAmount(items)}</td>
+                <td>{calculateNetAmount(items)}</td>
               </tr>
             </tbody>
           </table>
