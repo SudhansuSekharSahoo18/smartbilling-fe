@@ -1,4 +1,4 @@
-import React, { useRef,useEffect,useState } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { AgGridReact } from 'ag-grid-react'; // React Data Grid Component
 import "ag-grid-community/styles/ag-grid.css"; // Mandatory CSS required by the grid
 import "ag-grid-community/styles/ag-theme-quartz.css";
@@ -15,13 +15,11 @@ const SaleReport = (props) => {
     { make: "Toyota", model: "Corolla", price: 29600, electric: false },
   ]);
 
-  const [selectedMonth, setSelectedMonth] = useState(null);
-  const [selectedYear, setSelectedYear] = useState(null);
   const monthOptions = [
     { value: 1, label: 'Jan' },
     { value: 2, label: 'Feb' },
     { value: 3, label: 'Mar' },
-    { value: 4, label: 'April'},
+    { value: 4, label: 'April' },
     { value: 5, label: 'May' },
     { value: 6, label: 'June' },
     { value: 7, label: 'July' },
@@ -42,6 +40,9 @@ const SaleReport = (props) => {
     { value: 2026, label: '2026' },
   ];
 
+  const [selectedMonth, setSelectedMonth] = useState(monthOptions[0].value);
+  const [selectedYear, setSelectedYear] = useState(yearOptions[0].value);
+
   const pagination = true;
   const paginationPageSize = 500;
   const paginationPageSizeSelector = [200, 500, 1000];
@@ -49,7 +50,7 @@ const SaleReport = (props) => {
   const [colDefs, setColDefs] = useState([
     // { field: "button", cellRenderer: EditButton },
     // { field: "button", cellRenderer: DeleteButton },
-    { field: "barcode", filter:true},
+    { field: "barcode", filter: true },
     { field: "title" },
     { field: "quantity" },
     // { field: "Unit" },
@@ -58,18 +59,18 @@ const SaleReport = (props) => {
   ]);
 
 
-  const OnDownloadClicked = async () =>{
-    console.log('Month -> '+selectedMonth)
-    console.log('Year -> '+selectedYear) 
-    const filename = 'salereport.csv'
+  const OnDownloadClicked = async () => {
+    // console.log('Month -> '+selectedMonth)
+    // console.log('Year -> '+selectedYear) 
+    const filename = 'SaleReport_' + selectedMonth + '_' + selectedYear + '.csv'
     try {
-      const response = await fetch(props.ipAddress + GenerateSaleReport+'?month='+selectedMonth+'&year='+selectedYear,{
+      const response = await fetch(props.ipAddress + GenerateSaleReport + '?month=' + selectedMonth + '&year=' + selectedYear, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/octet-stream',
         },
       })
-      
+
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
@@ -91,12 +92,10 @@ const SaleReport = (props) => {
   }
 
   const handleSelectMonth = (option) => {
-    // console.log('Selected option:', option);
     setSelectedMonth(option);
   };
 
   const handleSelectYear = (option) => {
-    // console.log('Selected option:', option);
     setSelectedYear(option);
   };
 
@@ -132,13 +131,13 @@ const SaleReport = (props) => {
 
   return (
     <div className="ag-theme-quartz" style={{ height: 500 }} >
-        <Dropdown label={'Select Month'} options={monthOptions} onSelect={handleSelectMonth} />
-        <Dropdown label={'Select Year'} options={yearOptions} onSelect={handleSelectYear} />
-        <button onClick={() => OnDownloadClicked()}>Download</button>
-        <AgGridReact rowData={items} columnDefs={colDefs} rowSelection={'multiple'}
-            pagination={pagination} paginationPageSize={paginationPageSize}
-            paginationPageSizeSelector={paginationPageSizeSelector}
-        />
+      <Dropdown label={'Select Month'} options={monthOptions} onSelect={handleSelectMonth} />
+      <Dropdown label={'Select Year'} options={yearOptions} onSelect={handleSelectYear} />
+      <button onClick={() => OnDownloadClicked()}>Download</button>
+      {/* <AgGridReact rowData={items} columnDefs={colDefs} rowSelection={'multiple'}
+        pagination={pagination} paginationPageSize={paginationPageSize}
+        paginationPageSizeSelector={paginationPageSizeSelector}
+      /> */}
     </div>
   );
 };
