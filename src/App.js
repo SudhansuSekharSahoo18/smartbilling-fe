@@ -11,6 +11,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import ErrorView from './components/view/Error/ErrorView';
 import ErrorPageNotFoundView from './components/view/Error/ErrorPageNotFoundVew';
 import Setting from './components/view/Setting/Setting';
+import Dashboard from './components/view/Dashboard/Dashboard';
 
 const App = () => {
   const [ipAddress, setIpAddress] = useState(null);
@@ -54,7 +55,10 @@ const App = () => {
         <div>vs 1.0.3</div>
           <ul>
             <li className={selectedTab === '' ? 'selectedNav' : ''}>
-              <Link to="/"><div onClick={() => setSelectedTab('')}>Stock</div></Link>
+              <Link to="/"><div onClick={() => setSelectedTab('')}>Dashboard</div></Link>
+            </li>
+            <li className={selectedTab === 'items' ? 'selectedNav' : ''}>
+              <Link to="/items"><div onClick={() => setSelectedTab('items')}>Stock</div></Link>
             </li>
             <li className={selectedTab === 'pos' ? 'selectedNav' : ''}>
               <Link to="/pos"><div onClick={() => setSelectedTab('pos')}>Billing</div></Link>
@@ -76,7 +80,8 @@ const App = () => {
         <ToastContainer />
         <div className='content'>
           <Routes>
-            <Route path="/" element={<Items notify={notify} ipAddress={ipAddress} />} />
+            <Route path="/" element={<Dashboard notify={notify} ipAddress={ipAddress} />} />
+            <Route path="/items" element={<Items notify={notify} ipAddress={ipAddress} />} />
             <Route path="/pos" element={<Billing notify={notify} ipAddress={ipAddress} />} />
             <Route path="/bills" element={<Bills notify={notify} ipAddress={ipAddress} />} />
             <Route path="/generateBarcode" element={<BarcodeView notify={notify} ipAddress={ipAddress}

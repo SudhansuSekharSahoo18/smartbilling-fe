@@ -8,6 +8,7 @@ export const AddToBarcode = 'item/AddToBarcode';
 // Bill
 export const GetAllBill = 'bill/Get';
 export const CreateBill = 'bill/create';
+export const GetTotalSaleByDate = 'bill/GetTotalSaleByDate';
 export const GenerateSaleReport = 'bill/GenerateSaleReport';
 
 // Barcode
