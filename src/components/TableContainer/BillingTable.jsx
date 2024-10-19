@@ -84,79 +84,75 @@ const BillingTable = ({ addBlankRow, items, setBillItems }) => {
     <div className="table-container">
       {(
         <div className='data-table'>
+          <div className="table-content">
+            <table>
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>Barcode</th>
+                  <th>ItemName</th>
+                  <th>Price</th>
+                  <th>Qty</th>
+                  <th>Discount %</th>
+                  <th>Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                {items.length > 0 && items.map((item, index) => (
+                  <tr key={index}>
+                    <td>
+                      <button onClick={() => handleDelete(index)}>
+                        {/* <img src={DeleteIcon} alt="Delete"/> */}
+                        Delete
+                      </button>
+                    </td>
+                    <td>{item.barcode}</td>
+                    <td>
+                      <input type="text"
+                        id={`input-${index}-${2}`}
+                        onChange={(e) => handleInputChange(e, index, 'itemName')}
+                        value={item.itemName}
+                        onKeyDown={(e) => handleKeyDown(e, index, 2)}
+                      />
+                    </td>
+                    <td>
+                      <input className='numberInput'
+                        style={{ textAlign: 'right' }}
+                        id={`input-${index}-${3}`}
+                        onChange={(e) => handleInputChange(e, index, 'mrp')}
+                        value={item.mrp}
+                        onKeyDown={(e) => handleKeyDown(e, index, 3)}
+                      />
+                    </td>
+                    <td>
+                      <input className='numberInput'
+                        type="number"
+                        style={{ textAlign: 'right' }}
+                        id={`input-${index}-${4}`}
+                        onChange={(e) => handleInputChange(e, index, 'quantity')}
+                        value={item.quantity}
+                        onKeyDown={(e) => handleKeyDown(e, index, 4)}
+                      />
+                    </td>
+                    <td>
+                      <input className='numberInput'
+                        style={{ textAlign: 'right' }}
+                        id={`input-${index}-${5}`}
+                        onChange={(e) => handleInputChange(e, index, 'discountPercentage')}
+                        value={item.discountPercentage}
+                        onKeyDown={(e) => handleKeyDown(e, index, 5)}
+                      />
+                    </td>
+                    <td style={{ textAlign: 'right' }}>
+                      {(100 - item.discountPercentage) * 0.01 * item.mrp * item.quantity}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
           <table>
-            <thead>
-              <tr>
-                <th></th>
-                <th>Barcode</th>
-                <th>ItemName</th>
-                <th>Price</th>
-                <th>Qty</th>
-                <th>Discount %</th>
-                <th>Amount</th>
-              </tr>
-            </thead>
             <tbody>
-              {items.length > 0 && items.map((item, index) => (
-                <tr key={index}>
-                  <td>
-                    <button onClick={() => handleDelete(index)}>
-                      {/* <img src={DeleteIcon} alt="Delete"/> */}
-                      Delete
-                    </button>
-                  </td>
-                  <td>{item.barcode}</td>
-                  <td>
-                    <input type="text"
-                      id={`input-${index}-${2}`}
-                      onChange={(e) => handleInputChange(e, index, 'itemName')}
-                      value={item.itemName}
-                      onKeyDown={(e) => handleKeyDown(e, index, 2)}
-                    />
-                  </td>
-                  <td>
-                    <input className='numberInput'
-                      style={{ textAlign: 'right' }}
-                      id={`input-${index}-${3}`}
-                      onChange={(e) => handleInputChange(e, index, 'mrp')}
-                      value={item.mrp}
-                      onKeyDown={(e) => handleKeyDown(e, index, 3)}
-                    />
-                  </td>
-                  <td>
-                    <input className='numberInput'
-                      type="number"
-                      style={{ textAlign: 'right' }}
-                      id={`input-${index}-${4}`}
-                      onChange={(e) => handleInputChange(e, index, 'quantity')}
-                      value={item.quantity}
-                      onKeyDown={(e) => handleKeyDown(e, index, 4)}
-                    />
-                  </td>
-                  <td>
-                    <input className='numberInput'
-                      style={{ textAlign: 'right' }}
-                      id={`input-${index}-${5}`}
-                      onChange={(e) => handleInputChange(e, index, 'discountPercentage')}
-                      value={item.discountPercentage}
-                      onKeyDown={(e) => handleKeyDown(e, index, 5)}
-                    />
-                  </td>
-                  <td style={{ textAlign: 'right' }}>
-                    {(100 - item.discountPercentage) * 0.01 * item.mrp * item.quantity}
-                  </td>
-                </tr>
-              ))}
-              {emptyArr.length > 0 && emptyArr.map((item, index) => (
-                <tr key={index}>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-              ))}
               <tr>
                 <td></td>
                 <td></td>

@@ -1,7 +1,26 @@
 .table-container {
   padding: 0px;
   background-color: white;
+}
+
+.data-table {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   border-radius: 10px;
+  height: 400px;
+}
+
+.table-content{
+  overflow-y: auto; 
+}
+
+/* Make the header sticky */
+.table-content thead th {
+  position: sticky;
+  top: 0;
+  background-color: #f1f1f1; /* Add background to make sticky header visible */
+  z-index: 1;
 }
 
 .data-table table {
