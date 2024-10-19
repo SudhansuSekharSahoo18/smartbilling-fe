@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import './BillingTable.css';
-import { calculateTotalMrp, calculateNetAmount, calculateTotalDiscount } from './../view/Billing/BillingFunctions.js'
+import { calculateTotalMrp, calculateNetAmount, calculateTotalDiscount } from '../view/Billing/BillingManager.js'
 
-const BillingTable = ({ addBlankRow, items, setBillItems }) => {
-
-  const [emptyArr, setEmptyArr] = useState([1, 2, 3, 4, 5]);
+const BillingTable = ({ addBlankRow, items, setBillItems, setBillDiscount, setAmountRecieved }) => {
   const [flag, setFlag] = useState(false);
   const [focusedIndex, setFocusedIndex] = useState([0, 0]);
+  const [totalBillAmount, setTotalBillAmount] = useState(0);
 
   const handleKeyDown = (event, row, col) => {
     if (event.key === 'ArrowRight') {
@@ -78,6 +77,10 @@ const BillingTable = ({ addBlankRow, items, setBillItems }) => {
       setFlag(false)
       onDownArrowPressed(focusedIndex[0], focusedIndex[1])
     }
+    const totalAmount = calculateNetAmount(items);
+    setTotalBillAmount(totalAmount);
+    setBillDiscount(0);
+    setAmountRecieved(totalAmount)
   }, [items]);
 
   return (
@@ -160,7 +163,7 @@ const BillingTable = ({ addBlankRow, items, setBillItems }) => {
                 <td></td>
                 <td></td>
                 <td></td>
-                <td>{calculateNetAmount(items)}</td>
+                <td>{totalBillAmount}</td>
               </tr>
             </tbody>
           </table>

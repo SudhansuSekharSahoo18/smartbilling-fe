@@ -1,6 +1,6 @@
 import React from 'react';
 import './Report.css';
-import { calculateTotalMrp, calculateNetAmount, calculateTotalDiscount } from './../view/Billing/BillingFunctions.js'
+import { calculateTotalMrp, calculateNetAmount, calculateTotalDiscount } from '../view/Billing/BillingManager.js'
 
 const Report = ({ billNumber, customerName, dateTime, billItems, shopName, shopAddress, shopGSTNumber }) => {
 

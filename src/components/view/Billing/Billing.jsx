@@ -7,6 +7,7 @@ import CustomInput from '../../CustomInput/CustomInput';
 import Dropdown from '../../Dropdown/Dropdown';
 import { formatDate } from '../../../Helper/dateHelper.js'
 import { CreateBill, GetAllItems } from '../../../APIEndpoints.js'
+import { calculateNetAmount } from './BillingManager.js'
 
 const Billing = () => {
   const [ipAddress, setIpAddress] = useState(null);
@@ -25,6 +26,8 @@ const Billing = () => {
   const [customerMobileNumber, setCustomerMobileNumber] = useState('');
   const [modeOfPayment, setModeOfPayment] = useState('');
   const [dateTime, setDateTime] = useState('');
+  const [billDiscount, setBillDiscount] = useState();
+  const [amountRecieved, setAmountRecieved] = useState();
   const [shopName, setShopName] = useState('Shop Name Not Found');
   const [shopAddress, setShopAddress] = useState('Address not found');
   const [shopGstNumber, setShopGstNumber] = useState('GST number not found');
@@ -65,9 +68,7 @@ const Billing = () => {
 
   const onSubmitButtonClick = () => {
     if (inputValue.trim() !== '') {
-      // console.log(products)
       let dbItem = products.find(x => x.barcode === inputValue)
-      // console.log('dbItem'+dbItem)
       if (dbItem !== undefined) {
         let item = billItems.find(x => x.itemId === dbItem.id)
         if (item === undefined) {
@@ -116,6 +117,12 @@ const Billing = () => {
       handlePrint();
     }
   }, [billNumber]);
+
+  useEffect(() => {
+    const billAmount = calculateNetAmount(billItems)
+    const numberValue = isNaN(billDiscount) ? 0 : Number(billDiscount);
+    setAmountRecieved(billAmount - numberValue);
+  }, [billDiscount]);
 
   useEffect(() => {
     const handleKeyDown = (event) => {
@@ -251,13 +258,17 @@ const Billing = () => {
         {/* <div>Customer Details</div> */}
 
         <div className='billingSection'>
-          <BillingTable addBlankRow={addBlankRow} items={billItems} setBillItems={setBillItems}
+          <BillingTable addBlankRow={addBlankRow} items={billItems} setBillItems={setBillItems} setBillDiscount={setBillDiscount} setAmountRecieved={setAmountRecieved}
           />
           <div className='customerDetails'>
             <CustomInput className='customInput' label="Mobile" text={customerMobileNumber} setText={setCustomerMobileNumber} />
             <CustomInput className='customInput' label="Name" text={customerName} setText={setCustomerName} />
             <Dropdown label="Payment Mode" options={paymentOptions} onSelect={handleSelectedPayment} />
           </div>
+        </div>
+        <div>
+          <CustomInput className='customInput' label="Bill Discount" text={billDiscount} setText={setBillDiscount} type={'number'} />
+          <CustomInput className='customInput' label="Amount Recieved" text={amountRecieved} setText={setAmountRecieved} isReadyOnly={true} />
         </div>
       </div>
 
