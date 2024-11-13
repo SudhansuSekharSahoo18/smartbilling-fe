@@ -42,6 +42,7 @@ const Billing = () => {
   const handleSelectedPayment = (option) => {
     setModeOfPayment(option);
   };
+
   const handleKeyDown = (event) => {
     if (event.key === 'Enter') {
       onSubmitButtonClick();
@@ -190,7 +191,6 @@ const Billing = () => {
       shallPrintBill.current = true;
       setBillNumber(data.id);
     } catch (error) {
-      // console.error('Error:', error);
       alert(error)
     }
   };
@@ -229,15 +229,11 @@ const Billing = () => {
         "billItems": billItemDto,
       }
 
-      // console.log('handleSubmit')
-
       // POST request
       handleSubmit(bill)
-
     } catch (e) {
       // console.log(e)
     }
-
   }
 
   return (

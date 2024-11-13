@@ -29,7 +29,6 @@ const Dashboard = (props) => {
           .then(data => {
             // data.length = 5
             setTotalSale(data);
-            console.log(data);
           })
           .catch(error => {
             console.log('error - > ' + error);

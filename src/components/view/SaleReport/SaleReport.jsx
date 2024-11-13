@@ -60,8 +60,6 @@ const SaleReport = (props) => {
 
 
   const OnDownloadClicked = async () => {
-    // console.log('Month -> '+selectedMonth)
-    // console.log('Year -> '+selectedYear) 
     const filename = 'SaleReport_' + selectedMonth + '_' + selectedYear + '.csv'
     try {
       const response = await fetch(props.ipAddress + GenerateSaleReport + '?month=' + selectedMonth + '&year=' + selectedYear, {

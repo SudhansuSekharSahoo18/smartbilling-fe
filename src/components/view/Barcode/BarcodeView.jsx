@@ -39,21 +39,17 @@ const BarcodeView = ({ notify, ipAddress, barcodeGenerateFilePath }) => {
       return;
     }
     const deletedBarcode = rowData.filter((item) => item.id === selectedId);
-    console.log('deleted id -> ' + deletedBarcode[0].id)
     if (deletedBarcode[0].id !== undefined) {
       try {
         const url = ip + DeleteBarcode + deletedBarcode[0].id ;
-        console.log(url)
         const response = await fetch(url, {
           method: 'DELETE',
           headers: {
             'Content-Type': 'application/json'
           },
         });
-        console.log(response)
         
         if (response.ok) {
-          console.log('Barcode removed')
           notify('Barcode removed')
           const newData = rowData.filter((item) => item.id !== selectedId);
           setRowData(newData)
