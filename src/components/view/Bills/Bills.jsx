@@ -6,8 +6,10 @@ import { GetAllBill } from '../../../APIEndpoints.js'
 import { ReactToPrint } from 'react-to-print';
 import Report from '../../Report/Report';
 import { formatDate } from '../../../Helper/dateHelper.js'
+import { DeleteBill } from '../../../APIEndpoints.js'
 
-const Bills = () => {
+const Bills = (props) => {
+  const gridRef = useRef(null);
   const componentRef = useRef(null);
   const reactToPrintRef = useRef();
   const shallPrintBill = useRef(false);
@@ -18,6 +20,7 @@ const Bills = () => {
   const [shopName, setShopName] = useState('Shop Name Not Found');
   const [shopAddress, setShopAddress] = useState('Address not found');
   const [shopGstNumber, setShopGstNumber] = useState('GST number not found');
+  const [selectedId, setSelectedId] = useState(0);
   const [rowData, setRowData] = useState([
     { make: "Tesla", model: "Model Y", price: 64950, electric: true },
     { make: "Ford", model: "F-Series", price: 33850, electric: false },
@@ -53,16 +56,42 @@ const Bills = () => {
     return <button onClick={() => window.alert('clicked')}>Delete</button>;
   };
 
-  const OnSelectionChanged = (e) =>{
-    console.log(e.data)
+  const OnSelectionChanged = (e) => {
     setBill(e.data);
+
+    const selectedNodes = gridRef.current.api.getSelectedNodes();
+    if (selectedNodes.length > 0) {
+      const selectedData = selectedNodes.map(node => node.data);
+      const temp = selectedData[0];
+      setSelectedId(temp['id']);
+    }
+  }
+
+  const OnDeleteButtonClicked = async () => {
+    if (selectedId === 0) {
+      alert('Please select a record to delete')
+      return;
+    }
+
+    const response = await fetch(props.ipAddress + DeleteBill + selectedId, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+    });
+
+    if (response.ok) {
+      const newData = rowData.filter((item) => item.id !== selectedId);
+      setRowData(newData)
+      setSelectedId(0);
+      props.notify('success', 'Item Deleted')
+    }
+    else
+      props.notify('error', response.status)
   }
 
   const onDoubleClick = (event) => {
-    // console.log(event.data.id)
     setBillItems(event.data.billItems);
-    
-    console.log(event.data.billItems)
     setShowDetail(true)
   }
 
@@ -93,7 +122,6 @@ const Bills = () => {
             return response.json();
           })
           .then(data => {
-            console.log(data)
             setRowData(data);
           })
           .catch(error => {
@@ -120,8 +148,11 @@ const Bills = () => {
           content={() => componentRef.current}
           ref={reactToPrintRef}
         />
+        <button onClick={OnDeleteButtonClicked}>Delete</button>
         <AgGridReact rowData={rowData} columnDefs={colDefs} rowSelection={'multiple'}
-          onRowDoubleClicked={(e) => onDoubleClick(e)} onRowClicked={(e)=>OnSelectionChanged(e)}
+          ref={gridRef}
+          onRowDoubleClicked={(e) => onDoubleClick(e)}
+          onRowClicked={(e) => OnSelectionChanged(e)}
           pagination={pagination} paginationPageSize={paginationPageSize}
           paginationPageSizeSelector={paginationPageSizeSelector}
         />
