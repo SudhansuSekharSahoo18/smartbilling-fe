@@ -24,7 +24,6 @@ const Items = (props) => {
   const [isTaxInclusive, setIsTaxInclusive] = useState(true);
   const [selectedId, setSelectedId] = useState(0);
   const [isEditMode, setIsEditMode] = useState(false);
-  const [errorMessages, setErrorMessages] = useState([]);
 
   const [items, setItems] = useState([]);
   const unitOptions = [
@@ -70,20 +69,54 @@ const Items = (props) => {
     // { field: "isTaxInclusive", flex: 1 },
   ]);
 
-  const Validate = () => {
+  const ValidateItem = () => {
     let isValid = true;
-    if (tax == 0)
-    {
-      const message = 'Please provide tax';
-      setErrorMessages([...messages, message]);
+    let errorMessages = [];
+
+    // validate ItemName
+    if (itemName === '' || itemName === undefined) {
+      const message = 'Please provide Item Name';
+      errorMessages.push(message);
       isValid = false;
     }
-      
+
+    // validate cost price
+    if (costPrice === 0 || costPrice === undefined) {
+      const message = 'Please provide Cost Price';
+      errorMessages.push(message);
+      isValid = false;
+    }
+
+    // validate MRP price
+    if (MRP === 0 || MRP === undefined) {
+      const message = 'Please provide MRP';
+      errorMessages.push(message);
+      isValid = false;
+    }
+
+    // validate tax
+    if (tax === 0 || tax === undefined) {
+      const message = 'Please provide Tax';
+      errorMessages.push(message);
+      isValid = false;
+    }
+
+    DisplayErrorMessages(errorMessages);
 
     return isValid;
   }
 
+  const DisplayErrorMessages = (errorMessages) => {
+    for (let i = 0; i < errorMessages.length; i++) {
+      props.notify('error', errorMessages[i])
+    }
+  }
+
   const OnAddItemClicked = async () => {
+    if (ValidateItem() === false) {
+      return;
+    }
+
     const itemDto = {
       'barcode': barcode, 'itemName': itemName, 'hsnCode': hsnCode, 'quantity': quantity, 'unit': selectedUnit,
       'costPrice': costPrice, 'mrp': MRP, 'discountPercentage': discountPercentage, 'tax': tax, 'isTaxInclusive': isTaxInclusive,
@@ -144,7 +177,7 @@ const Items = (props) => {
       alert('Please select a record to delete')
       return;
     }
-    const itemDto = {'id': selectedId}
+    const itemDto = { 'id': selectedId }
     const response = await postRequest(props.ipAddress + DeleteItem, itemDto)
     if (response.ok) {
       const newData = items.filter((item) => item.id !== selectedId);
