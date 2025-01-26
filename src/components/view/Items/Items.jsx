@@ -24,6 +24,7 @@ const Items = (props) => {
   const [isTaxInclusive, setIsTaxInclusive] = useState(true);
   const [selectedId, setSelectedId] = useState(0);
   const [isEditMode, setIsEditMode] = useState(false);
+  const [errorMessages, setErrorMessages] = useState([]);
 
   const [items, setItems] = useState([]);
   const unitOptions = [
@@ -69,6 +70,19 @@ const Items = (props) => {
     // { field: "isTaxInclusive", flex: 1 },
   ]);
 
+  const Validate = () => {
+    let isValid = true;
+    if (tax == 0)
+    {
+      const message = 'Please provide tax';
+      setErrorMessages([...messages, message]);
+      isValid = false;
+    }
+      
+
+    return isValid;
+  }
+
   const OnAddItemClicked = async () => {
     const itemDto = {
       'barcode': barcode, 'itemName': itemName, 'hsnCode': hsnCode, 'quantity': quantity, 'unit': selectedUnit,
@@ -83,8 +97,6 @@ const Items = (props) => {
     }
     else
       props.notify('error', response.status)
-
-
   }
 
   const OnClearButtonClicked = () => {
@@ -191,7 +203,7 @@ const Items = (props) => {
     // setQuantity(5);
     // setCostPrice(100);
     // setSellPrice(200);
-    setTax(5);
+    // setTax(0);
 
     fetch('/config.json')
       .then(response => response.json())
