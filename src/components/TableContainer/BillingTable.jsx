@@ -122,6 +122,7 @@ const BillingTable = ({ addBlankRow, items, setBillItems, setBillDiscount, setAm
                       <input className='numberInput'
                         style={{ textAlign: 'right' }}
                         id={`input-${index}-${3}`}
+                        autoComplete="off"
                         onChange={(e) => handleInputChange(e, index, 'mrp')}
                         value={item.mrp}
                         onKeyDown={(e) => handleKeyDown(e, index, 3)}
@@ -129,7 +130,7 @@ const BillingTable = ({ addBlankRow, items, setBillItems, setBillDiscount, setAm
                     </td>
                     <td>
                       <input className='numberInput'
-                        type="number"
+                        type="number  no-spinner"
                         style={{ textAlign: 'right' }}
                         id={`input-${index}-${4}`}
                         onChange={(e) => handleInputChange(e, index, 'quantity')}
