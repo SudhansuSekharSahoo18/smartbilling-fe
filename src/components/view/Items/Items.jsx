@@ -71,7 +71,54 @@ const Items = (props) => {
     // { field: "isTaxInclusive", flex: 1 },
   ]);
 
+  const ValidateItem = () => {
+    let isValid = true;
+    let errorMessages = [];
+
+    // validate ItemName
+    if (itemName === '' || itemName === undefined) {
+      const message = 'Please provide Item Name';
+      errorMessages.push(message);
+      isValid = false;
+    }
+
+    // validate cost price
+    if (costPrice === 0 || costPrice === undefined) {
+      const message = 'Please provide Cost Price';
+      errorMessages.push(message);
+      isValid = false;
+    }
+
+    // validate MRP price
+    if (MRP === 0 || MRP === undefined) {
+      const message = 'Please provide MRP';
+      errorMessages.push(message);
+      isValid = false;
+    }
+
+    // validate tax
+    if (tax === 0 || tax === undefined) {
+      const message = 'Please provide Tax';
+      errorMessages.push(message);
+      isValid = false;
+    }
+
+    DisplayErrorMessages(errorMessages);
+
+    return isValid;
+  }
+
+  const DisplayErrorMessages = (errorMessages) => {
+    for (let i = 0; i < errorMessages.length; i++) {
+      props.notify('error', errorMessages[i])
+    }
+  }
+
   const OnAddItemClicked = async () => {
+    if (ValidateItem() === false) {
+      return;
+    }
+
     const itemDto = {
       'barcode': barcode, 'itemName': itemName, 'hsnCode': hsnCode, 'quantity': quantity, 'unit': selectedUnit,
       'costPrice': costPrice, 'mrp': MRP, 'discountPercentage': discountPercentage, 'tax': tax, 'isTaxInclusive': isTaxInclusive,
@@ -85,8 +132,6 @@ const Items = (props) => {
     }
     else
       props.notify('error', response.status)
-
-
   }
 
   const OnClearButtonClicked = () => {
@@ -134,7 +179,7 @@ const Items = (props) => {
       alert('Please select a record to delete')
       return;
     }
-    const itemDto = {'id': selectedId}
+    const itemDto = { 'id': selectedId }
     const response = await postRequest(props.ipAddress + DeleteItem, itemDto)
     if (response.ok) {
       const newData = items.filter((item) => item.id !== selectedId);
@@ -253,7 +298,7 @@ const Items = (props) => {
     // setQuantity(5);
     // setCostPrice(100);
     // setSellPrice(200);
-    setTax(5);
+    // setTax(0);
 
     fetch('/config.json')
       .then(response => response.json())
