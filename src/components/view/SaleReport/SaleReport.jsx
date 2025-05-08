@@ -98,6 +98,10 @@ const SaleReport = (props) => {
   };
 
   useEffect(() => {
+    const currentMonth = new Date().getMonth() + 1;
+    // const currentYear = new Date().getFullYear();
+    setSelectedMonth(monthOptions[new Date().getMonth()].value);
+    
     // fetch('/config.json')
     // .then(response => response.json())
     // .then(data => {

@@ -30,21 +30,21 @@ const Report = ({ billNumber, customerName, dateTime, billItems, shopName, shopA
                     {billItems.length > 0 && billItems.map((item, index) => (
 
                         <tr key={index}>
-                            <td style={{ fontSize: '30px', fontWeight: 'bold' }}>{item.itemName}</td>
-                            <td style={{ textAlign: 'right', fontSize: '30px', fontWeight: 'bold' }}>{item.mrp}</td>
-                            <td style={{ textAlign: 'right', fontSize: '30px', fontWeight: 'bold' }}>{item.quantity}</td>
-                            <td style={{ textAlign: 'right', fontSize: '30px', fontWeight: 'bold' }}>{item.discountPercentage}</td>
-                            <td style={{ textAlign: 'right', fontSize: '30px', fontWeight: 'bold' }}>{parseFloat((100 - item.discountPercentage) * 0.01 * item.mrp * item.quantity).toFixed(2)}</td>
+                            <td style={{ fontSize: '25px', fontWeight: 'bold' }}>{item.itemName}</td>
+                            <td style={{ textAlign: 'right', fontSize: '25px', fontWeight: 'bold' }}>{item.mrp}</td>
+                            <td style={{ textAlign: 'right', fontSize: '25px', fontWeight: 'bold' }}>{item.quantity}</td>
+                            <td style={{ textAlign: 'right', fontSize: '25px', fontWeight: 'bold' }}>{item.discountPercentage}</td>
+                            <td style={{ textAlign: 'right', fontSize: '25px', fontWeight: 'bold' }}>{parseFloat((100 - item.discountPercentage) * 0.01 * item.mrp * item.quantity).toFixed(2)}</td>
                         </tr>
                     ))}
                     <div style={{ height: '20px' }}></div>
                     <tr>
                         {/* <td></td> */}
-                        <td style={{ textAlign: 'right', fontSize: '40px', fontWeight: 'bold' }}>Net amount</td>
+                        <td style={{ textAlign: 'right', fontSize: '25px', fontWeight: 'bold' }}>Net amount</td>
                         <td></td>
                         <td></td>
                         <td></td>
-                        <td style={{ textAlign: 'right', fontSize: '40px', fontWeight: 'bold' }}>{calculateNetAmount(billItems)}</td>
+                        <td style={{ textAlign: 'right', fontSize: '25px', fontWeight: 'bold' }}>{calculateNetAmount(billItems)}</td>
                     </tr>
                 </tbody>
             </table>

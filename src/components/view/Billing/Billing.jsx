@@ -24,7 +24,7 @@ const Billing = () => {
   const [billNumber, setBillNumber] = useState();
   const [customerName, setCustomerName] = useState('');
   const [customerMobileNumber, setCustomerMobileNumber] = useState('');
-  const [modeOfPayment, setModeOfPayment] = useState('');
+  const [modeOfPayment, setModeOfPayment] = useState('cash');
   const [dateTime, setDateTime] = useState('');
   const [billDiscount, setBillDiscount] = useState();
   const [amountRecieved, setAmountRecieved] = useState();
@@ -33,10 +33,10 @@ const Billing = () => {
   const [shopGstNumber, setShopGstNumber] = useState('GST number not found');
   const shallPrintBill = useRef(false);
   const paymentOptions = [
-    { value: 1, label: 'Cash' },
-    { value: 2, label: 'UPI' },
-    { value: 3, label: 'Credit Card' },
-    { value: 4, label: 'Debit Card' },
+    { value: 'cash', label: 'Cash' },
+    { value: 'upi', label: 'UPI' },
+    { value: 'creditcard', label: 'Credit Card' },
+    { value: 'debitcard', label: 'Debit Card' },
   ];
 
   const handleSelectedPayment = (option) => {
@@ -243,7 +243,7 @@ const Billing = () => {
         />
         <button onClick={onSubmitButtonClick}>Submit</button>
         <button onClick={onClearButtonClick}>Clear</button>
-        <button onClick={() => createBill(billItems, 0, modeOfPayment, customerName, customerMobileNumber, '', true)}>Create Bill</button>
+        <button onClick={() => createBill(billItems, billDiscount, modeOfPayment, customerName, customerMobileNumber, '', true)}>Create Bill</button>
         <ReactToPrint
           // trigger={() => {
           // return <button>Pri t Bill</button>;

@@ -5,13 +5,15 @@ import "ag-grid-community/styles/ag-theme-quartz.css";
 import CustomInput from '../../CustomInput/CustomInput';
 import './Items.css';
 import Dropdown from '../../Dropdown/Dropdown';
-import { postRequest, patchRequest } from '../../../Helper/apiHelper.js';
+import { postRequest } from '../../../Helper/apiHelper.js';
 import CustomCheckBox from '../../CustomCheckBox/CustomCheckBox.jsx';
-import { AddToBarcode, GetAllItems, CreateItem, UpdateItem, DeleteItem } from '../../../APIEndpoints.js'
+import { AddToBarcode, GetAllItems, CreateItem, UpdateItem, DeleteItem, Export, Import } from '../../../APIEndpoints.js'
+import FileUpload from '../../FileUpload/FileUpload.jsx';
 
 
 const Items = (props) => {
   const gridRef = useRef(null);
+  const [ip, setIp] = useState('');
   const [barcode, setBarcode] = useState('');
   const [itemName, setItemName] = useState('');
   const [hsnCode, setHsnCode] = useState('');
@@ -161,6 +163,66 @@ const Items = (props) => {
       props.notify('error', response.status)
   }
 
+  const OnExportButtonClicked = async () => {
+    const filename = 'items.xlsx'
+    try {
+      const response = await fetch(props.ipAddress + Export, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/octet-stream',
+        },
+      })
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const blob = await response.blob();
+      if (!blob || !(blob instanceof Blob)) {
+        throw new Error('The fetched data is not a valid Blob');
+      }
+      const urlBlob = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = urlBlob;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(urlBlob);
+    } catch (error) {
+      console.error('Error downloading file:', error);
+    }
+  }
+  
+  const OnImportButtonClicked = async () => {
+    const filename = 'items.csv'
+    try {
+      const response = await fetch(props.ipAddress + Import, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/octet-stream',
+        },
+      })
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const blob = await response.blob();
+      if (!blob || !(blob instanceof Blob)) {
+        throw new Error('The fetched data is not a valid Blob');
+      }
+      const urlBlob = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = urlBlob;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(urlBlob);
+    } catch (error) {
+      console.error('Error downloading file:', error);
+    }
+  }
+
   const onSelectionChanged = () => {
     const selectedNodes = gridRef.current.api.getSelectedNodes();
     if (selectedNodes.length > 0) {
@@ -197,6 +259,8 @@ const Items = (props) => {
       .then(response => response.json())
       .then(data => {
         const url = data.backendUrl + 'api/';
+        setIp(data.backendUrl);
+
         fetch(url + GetAllItems)
           .then(response => {
             if (!response.ok) {
@@ -243,6 +307,9 @@ const Items = (props) => {
       <button onClick={OnClearButtonClicked}>{isEditMode ? 'Cancel' : 'Clear'}</button>
       {!isEditMode && <button onClick={OnDeleteButtonClicked}>Delete</button>}
       {!isEditMode && <button onClick={OnAddToBarcodeButtonClicked}>Add to Barcode</button>}
+      {!isEditMode && <button onClick={OnExportButtonClicked}>Export</button>}
+      {!isEditMode && <button onClick={OnImportButtonClicked}>Import</button>}
+      {<FileUpload ipAddress={ip} />}
       {!isEditMode && <div className="ag-theme-quartz" >
         <AgGridReact rowData={items} columnDefs={colDefs} embedFullWidthRows={true}
           ref={gridRef}
